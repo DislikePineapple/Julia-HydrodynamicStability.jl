@@ -4,6 +4,10 @@ authors = ["yangsheng <924096229@qq.com> and contributors"]
 version = "0.0.1"
 
 [compat]
+Aqua = "0.8"
+Pkg = "1.9"
+SafeTestsets = "0.1"
+Test = "1.0"
 julia = "1.9"
 
 [extras]
