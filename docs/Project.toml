@@ -1,0 +1,7 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+HydrodynamicStability = "7863843b-5d10-4cf2-b9e5-ac583df0c545"
+
+[compat]
+Documenter = "1"
+HydrodynamicStability = "0.0.1"
