@@ -14,6 +14,6 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/Super-Popar-Bear/HydrodynamicStability.git";
+    repo = "github.com/DislikePineapple/HydrodynamicStability.jl.git";
     push_preview = true,
 )

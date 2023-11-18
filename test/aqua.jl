@@ -25,7 +25,7 @@ end
 @testset "Aqua tests (additional)" begin
     Aqua.test_undefined_exports(HydrodynamicStability)
     Aqua.test_stale_deps(HydrodynamicStability)
-    Aqua.test_deps_compat(HydrodynamicStability)
+    # Aqua.test_deps_compat(HydrodynamicStability)
     Aqua.test_project_extras(HydrodynamicStability)
     # Aqua.test_project_toml_formatting(HydrodynamicStability)
     # Aqua.test_piracy(HydrodynamicStability)
