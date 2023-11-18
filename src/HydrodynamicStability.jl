@@ -31,8 +31,13 @@ function initial end
 include("utils.jl")
 
 include("general/lst_problem.jl")
-include("general/algorithm.jl")
 include("general/ode_solution.jl")
+include("general/algorithm.jl")
 include("general/solve.jl")
+
+export ODEProblem
+export solve
+
+export RK4
 
 end

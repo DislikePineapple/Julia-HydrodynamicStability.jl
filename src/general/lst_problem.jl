@@ -22,7 +22,7 @@ struct ODEProblem{F,uType,yType,P,K} <: AbstractODEProblem
     p::P
     kwarg::K
 
-    function ODEProblem(f, u0, yspan, p = NullParameters(); kwargs...)
+    function ODEProblem(f, u0, yspan, p = NullParameter(); kwargs...)
         new{typeof(f),typeof(u0),typeof(yspan),typeof(p),typeof(kwargs)}(
             f,
             u0,
@@ -61,7 +61,7 @@ struct BVProblem{F,BC,Y,U0,P,K} <: AbstractBVProblem
     "kwargs: The keyword arguments."
     kwargs::K
 
-    function BVProblem(f, bc, yspan, u0, p = NullParameters(); kwargs...)
+    function BVProblem(f, bc, yspan, u0, p = NullParameter(); kwargs...)
         new{typeof(f),typeof(bc),typeof(yspan),typeof(u0),typeof(p),typeof(kwargs)}(
             f,
             bc,
