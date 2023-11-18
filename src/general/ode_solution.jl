@@ -2,14 +2,14 @@
 Definde the ordinary differential equations solution
 
 """
-struct ODESolution{uType,tType,P,A,uType2}
+struct ODESolution{uType,yType,P,A,uType2,RT}
     u::uType
-    t::tType
+    y::yType
     prob::P
     alg::A
 
     u_analytic::uType2
-    retcode::ReturnCode.T
+    retcode::RT
 end
 
-ODESolution(u, t, prob, alg) = ODESolution(u, t, prob, alg, nothing, nothing)
+ODESolution(u, y, prob, alg) = ODESolution(u, y, prob, alg, nothing, nothing)

@@ -11,6 +11,29 @@ Define a linear stavility problem that is solved for a compressible flate bounda
 """
 
 @doc """
+`Ordinary Differential Equations Problem`
+
+Define the ODEs problem
+"""
+struct ODEProblem{F,uType,yType,P,K} <: AbstractODEProblem
+    f::F
+    u0::uType
+    yspan::yType
+    p::P
+    kwarg::K
+
+    function ODEProblem(f, u0, yspan, p = NullParameters(); kwargs...)
+        new{typeof(f),typeof(u0),typeof(yspan),typeof(p),typeof(kwargs)}(
+            f,
+            u0,
+            yspan,
+            p,
+            kwargs,
+        )
+    end
+end
+
+@doc """
 `Boundary Value Problem`
 
 Define a boundary Value problem
@@ -24,8 +47,7 @@ Define a boundary Value problem
 - `p`: The parameters for the problem. Defaults to `NullParameters`
 - `kwargs`: The keyword arguments.
 """
-struct BVProblem{isinplace,F,BC,Y,U0,P,K}
-    <:AbstractBVProblem
+struct BVProblem{F,BC,Y,U0,P,K} <: AbstractBVProblem
     "f: Function for the ordianry differential equations Du=f(u,t,p)."
     f::F
     "bc: Boundary conditions for the ODEs. Given as a function."
