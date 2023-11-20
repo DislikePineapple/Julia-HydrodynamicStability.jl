@@ -31,6 +31,8 @@ function solve(
             AbstractArray
             u = f(t)
             du = ForwardDiff.jacobian(f, t)
+        else
+            error("Secant only supports Number and AbstactVector types.")
         end
 
         iszero(u) && NonlinearSolution(t)
