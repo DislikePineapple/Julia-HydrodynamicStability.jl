@@ -1,1 +1,1 @@
-struct NullParameter end
+

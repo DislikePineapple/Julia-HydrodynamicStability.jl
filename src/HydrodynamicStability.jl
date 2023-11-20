@@ -1,5 +1,4 @@
 module HydrodynamicStability
-
 """
 ## HydrodynamicStability
 
@@ -7,12 +6,15 @@ Developed by Sheng for solving eigenvalue problems for hydrodynamic stability sy
 It also need a systems for parameter research.
 """
 
+using ForwardDiff
+
 import UnPack: @unpack
 import RecipesBase: @recipe
 
 # abstract type AbstractLinearProblem end
 # abstract type AbstractNonlinearProblem end
 
+## Problem
 abstract type AbstractProblem end
 
 abstract type AbstractODEProblem <: AbstractProblem end
@@ -22,23 +24,34 @@ abstract type AbstractSCProblem <: AbstractProblem end
 
 abstract type InstabilityProblem <: AbstractEVProblem end
 
+## Algorithm
 abstract type AbstractAlgorithm end
 
+## Solution
+abstract type AbstractSolution end
+
+abstract type AbstractNonlinearSolution end
 abstract type AbstractODESolution end
 
 function solve end
 function initial end
 
-include("utils.jl")
+struct NullParameter end
 
-include("general/ode_problem.jl")
-include("general/ode_solution.jl")
-include("general/ode_algorithm.jl")
-include("general/solve.jl")
+include("ode/ode_problem.jl")
+include("ode/ode_solution.jl")
+include("ode/ode_algorithm.jl")
+include("ode/ode_solve.jl")
 
-export ODEProblem
+include("nonlinear/nonlinear_problem.jl")
+include("nonlinear/nonlinear_solution.jl")
+include("nonlinear/nonlinear_algorithm.jl")
+include("nonlinear/nonlinear_solve.jl")
+
+export ODEProblem, NonlinearProblem
 export solve
 
+export Secant, Muller, Bisection, Falsi
 export RK4
 
 end

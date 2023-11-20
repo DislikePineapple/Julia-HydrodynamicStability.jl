@@ -2,8 +2,12 @@ using Pkg
 using SafeTestsets
 
 const GROUP = get(ENV, "GROUP", "All")
+const is_APPVEYOR = Sys.iswindows() && haskey(ENV, "APPVEYOR")
 
-if GROUP == "Core" || GROUP == "All"
-    @time @safetestset "Aqua" include("aqua.jl")
-    @time @safetestset "Linear ODE" include("linear_ode_test.jl")
+@time begin
+    if GROUP == "Core" || GROUP == "All"
+        @time @safetestset "Aqua" include("aqua.jl")
+        @time @safetestset "Nonlinear" include("nonlinear_test.jl")
+        @time @safetestset "Linear ODE" include("linear_ode_test.jl")
+    end
 end

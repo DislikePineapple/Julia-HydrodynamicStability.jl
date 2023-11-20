@@ -1,15 +1,3 @@
-abstract type NonlinearAlgorithm <: AbstractAlgorithm end
-struct Bisection <: NonlinearAlgorithm end
-struct Muller{T,Δ} <: NonlinearAlgorithm
-    tol::T
-    δ::Δ
-end
-Muller() = Muller(1e-9, 1e-7 + 1e-5im)
-struct Secant{T,Δ} <: NonlinearAlgorithm
-    tol::T
-    δ::Δ
-end
-
 abstract type ODEsAlgorithm <: AbstractAlgorithm end
 struct RK4 <: ODEsAlgorithm end
 
