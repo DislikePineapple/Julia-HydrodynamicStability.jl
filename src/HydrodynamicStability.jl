@@ -7,7 +7,8 @@ Developed by Sheng for solving eigenvalue problems for hydrodynamic stability sy
 It also need a systems for parameter research.
 """
 
-using UnPack
+import UnPack: @unpack
+import RecipesBase: @recipe
 
 # abstract type AbstractLinearProblem end
 # abstract type AbstractNonlinearProblem end
@@ -30,9 +31,9 @@ function initial end
 
 include("utils.jl")
 
-include("general/lst_problem.jl")
+include("general/ode_problem.jl")
 include("general/ode_solution.jl")
-include("general/algorithm.jl")
+include("general/ode_algorithm.jl")
 include("general/solve.jl")
 
 export ODEProblem

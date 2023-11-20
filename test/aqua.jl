@@ -3,6 +3,7 @@ using Aqua
 # using Test
 
 Aqua.test_all(HydrodynamicStability; ambiguities = false)
+
 # @testset "Aqua tests (performance)" begin
 #     # This tests that we don't accidentally run into
 #     # https://github.com/JuliaLang/julia/issues/29393

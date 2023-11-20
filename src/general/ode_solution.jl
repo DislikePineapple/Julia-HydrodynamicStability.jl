@@ -2,7 +2,7 @@
 Definde the ordinary differential equations solution
 
 """
-struct ODESolution{uType,yType,P,A,uType2,RT}
+struct ODESolution{uType,yType,P,A,uType2,RT} <: AbstractODESolution
     u::uType
     y::yType
     prob::P
@@ -12,4 +12,9 @@ struct ODESolution{uType,yType,P,A,uType2,RT}
     retcode::RT
 end
 
+ODESolution(u, y) = ODESolution(u, y, nothing, nothing)
 ODESolution(u, y, prob, alg) = ODESolution(u, y, prob, alg, nothing, nothing)
+
+@recipe function f(sol::HydrodynamicStability.AbstractODESolution)
+    sol.y, [x[1] for x in sol.u]
+end
