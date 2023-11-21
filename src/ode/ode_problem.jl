@@ -47,26 +47,20 @@ Define a boundary Value problem
 - `p`: The parameters for the problem. Defaults to `NullParameters`
 - `kwargs`: The keyword arguments.
 """
-struct BVProblem{F,BC,Y,U0,P,K} <: AbstractBVProblem
-    "f: Function for the ordianry differential equations Du=f(u,t,p)."
+struct BVProblem{F,BC,U0,Y,P,K} <: AbstractBVProblem
     f::F
-    "bc: Boundary conditions for the ODEs. Given as a function."
     bc::BC
-    "yspan: Wall-normal direction span for the problem."
-    yspan::Y
-    "u0: Initial conditions for the ODEs."
     u0::U0
-    "p: Parameter for problem."
+    yspan::Y
     p::P
-    "kwargs: The keyword arguments."
     kwargs::K
 
-    function BVProblem(f, bc, yspan, u0, p = NullParameter(); kwargs...)
-        new{typeof(f),typeof(bc),typeof(yspan),typeof(u0),typeof(p),typeof(kwargs)}(
+    function BVProblem(f, bc, u0, yspan, p = NullParameter(); kwargs...)
+        new{typeof(f),typeof(bc),typeof(u0),typeof(yspan),typeof(p),typeof(kwargs)}(
             f,
             bc,
-            yspan,
             u0,
+            yspan,
             p,
             kwargs,
         )

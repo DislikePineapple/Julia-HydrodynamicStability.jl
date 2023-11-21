@@ -1,10 +1,17 @@
+abstract type NonlinearAlgorithm <: AbstractAlgorithm end
+struct Bisection <: NonlinearAlgorithm end
+struct Falsi <: NonlinearAlgorithm end
+struct Muller <: NonlinearAlgorithm end
+struct Secant <: NonlinearAlgorithm end
+
+solve(prob::NonlinearProblem; kwarg...) = solve(prob::NonlinearProblem, Secant(); kwarg...)
+
 function solve(
     prob::NonlinearProblem,
     alg::Secant,
     arg...;
     abstol = nothing,
     reltol = nothing,
-    # δ = 1e-5,
     maxiters = 1000,
     kwarg...,
 )
@@ -27,17 +34,18 @@ function solve(
         if t isa Number
             u = f(t)
             du = ForwardDiff.derivative(f, t)
-        elseif isa
-            AbstractArray
+        elseif t isa AbstractArray
             u = f(t)
             du = ForwardDiff.jacobian(f, t)
+            # du = Jacobin(f, u, t, 1e-5)
+            # du = FiniteDiff.finite_difference_jacobian(f, t)
         else
             error("Secant only supports Number and AbstactVector types.")
         end
 
-        iszero(u) && NonlinearSolution(t)
+        iszero(u) && return NonlinearSolution(t)
 
-        t -= u / du
+        t -= du \ u
 
         isapprox(t, to, atol = atol, rtol = rtol) && return NonlinearSolution(t)
         to = t
@@ -45,13 +53,31 @@ function solve(
     error("Failed to converge in $maxiters iteu_righttions, and t = $t")
 end
 
+# function Jacobin(f, u0, t0, δ)
+#     N = length(t0)
+#     J = zeros(eltype(t0), N, N)
+#     @show(N)
+
+#     for i in eachindex(t0)
+#         t = copy(t0)
+#         t[i] = t[i] + δ
+#         u = f(t)
+#         @show(i)
+#         @show(t)
+#         @show(u)
+#         J[i, :] = (u - u0) ./ δ
+#     end
+#     # @show(J)
+#     return J
+# end
+
 function solve(
     prob::NonlinearProblem,
     alg::Muller,
     arg...;
     abstol = 1e-9,
+    maxiters = 1000,
     δ = 1e-5,
-    maxiters = 100,
     kwarg...,
 )
     @unpack f, t0, p = prob

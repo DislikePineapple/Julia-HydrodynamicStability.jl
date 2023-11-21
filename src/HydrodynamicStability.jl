@@ -7,6 +7,7 @@ It also need a systems for parameter research.
 """
 
 using ForwardDiff
+# using FiniteDiff
 
 import UnPack: @unpack
 import RecipesBase: @recipe
@@ -45,13 +46,13 @@ include("ode/ode_solve.jl")
 
 include("nonlinear/nonlinear_problem.jl")
 include("nonlinear/nonlinear_solution.jl")
-include("nonlinear/nonlinear_algorithm.jl")
+# include("nonlinear/nonlinear_algorithm.jl")
 include("nonlinear/nonlinear_solve.jl")
 
-export ODEProblem, NonlinearProblem
+export ODEProblem, BVProblem, NonlinearProblem
 export solve
 
 export Secant, Muller, Bisection, Falsi
-export RK4
+export RK4, Shooting
 
 end

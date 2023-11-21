@@ -1,33 +1,10 @@
 abstract type ODEsAlgorithm <: AbstractAlgorithm end
 struct RK4 <: ODEsAlgorithm end
 
-function rk4(f::Function, u0::Union{Number,AbstractArray}, t::AbstractArray, p)
-    # u = zeros(eltype(u0), length(u0), length(t))
-    u = Array{typeof(u0)}(undef, length(t))
-
-    s1 = copy(u0)
-    s2 = copy(u0)
-    s3 = copy(u0)
-    s4 = copy(u0)
-
-    u[1] = u0
-    @show() # initial conditions
-
-    for i = 1:length(t)-1
-        h = t[i+1] - t[i]
-        f(s1, u[i], p, t[i])
-        f(s2, u[i] .+ h / 2 * s1, p, t[i] + h / 2)
-        f(s3, u[i] .+ h / 2 * s2, p, t[i] + h / 2)
-        f(s4, u[i] .+ h * s3, p, t[i] + h)
-        u[i+1] = u[i] .+ h / 6 * (s1 .+ 2 * s2 .+ 2 * s3 .+ s4)
-    end
-    return u
-end
-
 abstract type BVProblemAlgorithm <: AbstractAlgorithm end
 struct Shooting{I,IT} <: BVProblemAlgorithm
     ivp::I
     iter::IT
 end
 
-Shooting() = Shooting(RK4(), Muller())
+Shooting() = Shooting(RK4(), Secant())
