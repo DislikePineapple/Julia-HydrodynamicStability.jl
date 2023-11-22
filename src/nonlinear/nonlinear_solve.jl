@@ -43,11 +43,12 @@ function solve(
             error("Secant only supports Number and AbstactVector types.")
         end
 
-        iszero(u) && return NonlinearSolution(t)
+        iszero(u) && return NonlinearSolution(t, prob, alg)
 
-        t -= du \ u
+        Δt = du \ u
+        t -= Δt
 
-        isapprox(t, to, atol = atol, rtol = rtol) && return NonlinearSolution(t)
+        isapprox(t, to, atol = atol, rtol = rtol) && return NonlinearSolution(t, prob, alg)
         to = t
     end
     error("Failed to converge in $maxiters iteu_righttions, and t = $t")
@@ -78,7 +79,7 @@ function solve(
     abstol = 1e-9,
     maxiters = 1000,
     δ = 1e-5,
-    kwarg...,
+    kwargs...,
 )
     @unpack f, t0, p = prob
     t0 = float(t0)
@@ -99,7 +100,7 @@ function solve(
         abs(w - sqrt) < abs(w + sqrt) ? denoms = w + sqrt : denoms = w - sqrt
 
         t0 = t0 - 2 * u[3] / denoms
-        sum(abs, u[3]) < abstol && return NonlinearSolution(t0)
+        sum(abs, u[3]) < abstol && return NonlinearSolution(t0, prob, alg)
     end
     error("Failed to converge in $maxiters iteu_righttions, and t = $t0")
 end
@@ -118,7 +119,7 @@ function solve(prob::NonlinearProblem, alg::Bisection, arg...; abstol = 1e-9, kw
     while (right - left) / 2 > abstol / 100
         sol = (left + right) / 2
         u_sol = f(sol, p)
-        abs(u_sol) < abstol && return NonlinearSolution(sol)
+        abs(u_sol) < abstol && return NonlinearSolution(sol, prob, alg)
         u_left * u_sol < 0 ? (right = sol; u_right = u_sol) : (left = sol; u_left = u_sol)
     end
     error("Not find zeros, and sol = $sol")
@@ -139,7 +140,7 @@ function solve(prob::NonlinearProblem, alg::Falsi, arg...; abstol = 1e-9, kwarg.
         add = (right - left) .* u_left ./ (u_left - u_right)
         sol = left + add
         u_so = f(sol, p)
-        abs(u_so) < abstol && return NonlinearSolution(sol)
+        abs(u_so) < abstol && return NonlinearSolution(sol, prob, alg)
         u_left * u_so < 0 ? (right = sol; u_right = u_so) : (left = sol; u_left = u_so)
     end
     error("Not find zeros, and sol = $sol")

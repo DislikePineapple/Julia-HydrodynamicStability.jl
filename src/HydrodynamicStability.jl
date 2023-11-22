@@ -33,6 +33,7 @@ abstract type AbstractSolution end
 
 abstract type AbstractNonlinearSolution end
 abstract type AbstractODESolution end
+abstract type AbstractEVPSolution end
 
 function solve end
 function initial end
