@@ -30,7 +30,7 @@ function solve(
         to = map(t -> oftype(one(eltype(t)), Inf), t)
     end
 
-    for _ = 1:maxiters
+    for n = 1:maxiters
         if t isa Number
             u = f(t)
             du = ForwardDiff.derivative(f, t)
@@ -51,7 +51,7 @@ function solve(
         isapprox(t, to, atol = atol, rtol = rtol) && return NonlinearSolution(t, prob, alg)
         to = t
     end
-    error("Failed to converge in $maxiters iteu_righttions, and t = $t")
+    error("Failed to converge in $maxiters iterations, and t = $t")
 end
 
 # function Jacobin(f, u0, t0, δ)
@@ -76,33 +76,58 @@ function solve(
     prob::NonlinearProblem,
     alg::Muller,
     arg...;
-    abstol = 1e-9,
+    abstol = nothing,
+    reltol = nothing,
     maxiters = 1000,
+    showiters = false,
     δ = 1e-5,
     kwargs...,
 )
-    @unpack f, t0, p = prob
-    t0 = float(t0)
+    t0 = float(prob.t0)
+    f(t) = prob.f(t, prob.p; kwargs...)
+    T = typeof(t0)
 
-    for _ = 1:maxiters
+    atol =
+        abstol !== nothing ? abstol :
+        real(oneunit(eltype(T))) * (eps(real(one(eltype(T)))))^(4 // 5)
+    rtol = reltol !== nothing ? reltol : eps(real(one(eltype(T))))^(4 // 5)
+
+    if t0 isa Number
+        to = oftype(one(eltype(t0)), Inf)
+    else
+        to = map(t -> oftype(one(eltype(t0)), Inf), t)
+    end
+
+    showiters && println("Muller iteration:")
+
+    for n = 1:maxiters
         t = [t0 - δ t0 + δ t0]
-        u = f.(t, p)
+        u = f.(t)
 
         f12 = (u[1] - u[2]) / (t[1] - t[2])
         f13 = (u[1] - u[3]) / (t[1] - t[3])
         f23 = (u[2] - u[3]) / (t[2] - t[3])
 
-        f123 = (f23 - f12) / (t[1] - t[3])
+        f123 = (f12 - f23) / (t[1] - t[3])
 
-        w = f12 + f13 - f23
-        sqrt = w^2 - 4 * u[3] / f123
+        w = f23 + f13 - f12
+        sqrt = √(w^2 - 4 * u[3] / f123)
 
-        abs(w - sqrt) < abs(w + sqrt) ? denoms = w + sqrt : denoms = w - sqrt
+        denoms = abs(w - sqrt) > abs(w + sqrt) ? w - sqrt : w + sqrt
 
-        t0 = t0 - 2 * u[3] / denoms
-        sum(abs, u[3]) < abstol && return NonlinearSolution(t0, prob, alg)
+        Δt = 2 * u[3] / denoms
+        t0 -= Δt
+
+        showiters && @printf "iteration = %i, FW = %.3e, BW = %.3e\n" n abs(Δt) abs(u[3])
+
+        iszero(u[3]) && return NonlinearSolution(t0, prob, alg)
+
+        isapprox(t0, to, atol = atol, rtol = rtol) &&
+            return NonlinearSolution(t0, prob, alg)
+
+        to = t0
     end
-    error("Failed to converge in $maxiters iteu_righttions, and t = $t0")
+    error("Failed to converge in $maxiters iterations, and t = $t0")
 end
 
 function solve(prob::NonlinearProblem, alg::Bisection, arg...; abstol = 1e-9, kwarg...)

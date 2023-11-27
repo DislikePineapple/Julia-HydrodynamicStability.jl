@@ -4,7 +4,7 @@ p = 2
 prob1 = NonlinearProblem(f, 1, p)
 
 for alg in (Secant, Muller)
-    sol = solve(prob1, alg(); abstol = 1e-9)
+    sol = solve(prob1, alg(); maxiters = 100, abstol = 1e-9)
     @test sol.t[1] ≈ √p
 end
 
