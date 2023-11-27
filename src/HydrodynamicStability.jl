@@ -9,6 +9,7 @@ It also need a systems for parameter research.
 using ForwardDiff
 # using FiniteDiff
 
+import Printf: @printf
 import UnPack: @unpack
 import RecipesBase: @recipe
 
@@ -27,12 +28,14 @@ abstract type InstabilityProblem <: AbstractEVProblem end
 
 ## Algorithm
 abstract type AbstractAlgorithm end
+abstract type AbstractEVPAlgorithm <: AbstractAlgorithm end
 
 ## Solution
 abstract type AbstractSolution end
 
 abstract type AbstractNonlinearSolution end
 abstract type AbstractODESolution end
+abstract type AbstractEVPSolution end
 
 function solve end
 function initial end
