@@ -1,6 +1,5 @@
 @doc """
 Definde the ordinary differential equations solution
-
 """
 struct ODESolution{uType,yType,P,A,uType2,RT} <: AbstractODESolution
     u::uType
@@ -16,6 +15,7 @@ end
 ODESolution(u, y) = ODESolution(u, y, nothing, nothing)
 ODESolution(u, y, prob, alg) = ODESolution(u, y, prob, alg, nothing, nothing)
 
+## Solution interface
 @recipe function f(sol::AbstractODESolution)
     sol.y, u2matrix(sol)
 end

@@ -6,37 +6,37 @@ function eigenvalue!(fs::FreeStream, wa::Wave)
         prob,
         Muller();
         abstol = 1e-9,
-        maxiters = 100,
+        maxiters = 1000,
         mode = "Sptial",
         # showiters = true,
     ).t
 end
 
-function eigenvalue_fix_point!(fs, wa)
+function eigenvalue_fix_point!(fs::FreeStream, wa::Wave)
     @unpack ω, β = wa
 
-    ωfind = 2
-    βfind = 2
+    ωfind = 0.5
+    βfind = 0.5
 
-    wa.α = 0.3 - 0.04im
+    wa.α = 0.08 - 0.015im
     wa.ω = ωfind
 
-    step = real(β) >= βfind ? 0.01 : -0.01
-    βs = βfind:step:real(β)
+    step = β >= βfind ? 0.01 : -0.01
+    βs = βfind:step:β
     for β in βs
         wa.β = β
         eigenvalue!(fs, wa)
     end
 
-    step = real(ω) >= ωfind ? 0.01 : -0.01
-    ωs = ωfind:step:real(ω)
+    step = ω >= ωfind ? 0.01 : -0.01
+    ωs = ωfind:step:ω
     for ω in ωs
         wa.ω = ω
         eigenvalue!(fs, wa)
     end
 end
 
-function eigenvalue_along_ω(fs, ω::AbstractArray, β::Number)
+function eigenvalue_along_ω(fs::FreeStream, ω::AbstractArray, β::Number)
     ω[begin] < ω[end] && reverse!(ω)
     α = zeros(ComplexF64, length(ω))
     wa = Wave(ω[begin], Inf, β)

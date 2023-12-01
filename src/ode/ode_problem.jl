@@ -66,3 +66,33 @@ struct BVProblem{F,BC,U0,Y,P,K} <: AbstractBVProblem
         )
     end
 end
+
+# struct TwopointBVProblem{F,IC,BC,U0,Y,P,K} <: AbstractBVProblem
+#     f::F
+#     ic::IC
+#     bc::BC
+#     u0::U0
+#     yspan::Y
+#     p::P
+#     kwargs::K
+
+#     function TwopointBVProblem(f, ic, bc, u0, yspan, p = NullParameter(); kwargs...)
+#         new{
+#             typeof(f),
+#             typeof(ic),
+#             typeof(bc),
+#             typeof(u0),
+#             typeof(yspan),
+#             typeof(p),
+#             typeof(kwargs),
+#         }(
+#             f,
+#             ic,
+#             bc,
+#             u0,
+#             yspan,
+#             p,
+#             kwargs,
+#         )
+#     end
+# end

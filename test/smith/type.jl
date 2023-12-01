@@ -5,7 +5,9 @@ struct FreeStream
 end
 
 mutable struct Wave
-    ω::Complex
-    α::Complex
-    β::Complex
+    ω::Number
+    α::Number
+    β::Number
 end
+
+

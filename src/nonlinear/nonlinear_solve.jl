@@ -118,7 +118,10 @@ function solve(
         Δt = 2 * u[3] / denoms
         t0 -= Δt
 
-        showiters && @printf "iteration = %i, FW = %.3e, BW = %.3e\n" n abs(Δt) abs(u[3])
+        showiters &&
+            @printf "iteration = %i, t0 = %f + %fi, FW = %.3e, BW = %.3e\n" n real(t0) imag(
+                t0,
+            ) abs(Δt) abs(u[3])
 
         iszero(u[3]) && return NonlinearSolution(t0, prob, alg)
 
