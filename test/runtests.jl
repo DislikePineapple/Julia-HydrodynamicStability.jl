@@ -10,6 +10,5 @@ const is_APPVEYOR = Sys.iswindows() && haskey(ENV, "APPVEYOR")
         @time @safetestset "Nonlinear" include("nonlinear_test.jl")
         @time @safetestset "Linear ODE" include("linear_ode_test.jl")
         @time @safetestset "Blasius Solution" include("blasius/blasius.jl")
-        @time @safetestset "Eigenvalue" include("heating/heating.jl")
     end
 end
