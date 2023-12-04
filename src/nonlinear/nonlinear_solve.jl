@@ -119,9 +119,9 @@ function solve(
         t0 -= Δt
 
         showiters &&
-            @printf "iteration = %i, t0 = %f + %fi, FW = %.3e, BW = %.3e\n" n real(t0) imag(
-                t0,
-            ) abs(Δt) abs(u[3])
+            @printf "iteration = %i, t0 = %f + %fi, FW = %.3e, BW = %.3e\n" n t0.re t0.im abs(
+                Δt,
+            ) abs(u[3])
 
         iszero(u[3]) && return NonlinearSolution(t0, prob, alg)
 

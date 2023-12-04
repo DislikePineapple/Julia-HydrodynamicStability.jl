@@ -7,13 +7,13 @@ import UnPack: @unpack
 using Plots
 plotlyjs()
 
-include("type.jl")
-include("calculate.jl")
+# include("type.jl")
+# include("calculate.jl")
 
 fs = FreeStream(3, 273.15, Inf)
 ω = collect(0.0:0.001:2)
 β = 0.5
-α = eigenvalue_along_ω(fs, ω, β)
+# α = eigenvalue_along_ω(fs, ω, β)
 
 wa = Wave(0.5, 0.08 - 0.015im, 0.5)
 eigenvalue!(fs, wa)
