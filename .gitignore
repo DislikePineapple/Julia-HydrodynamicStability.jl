@@ -4,3 +4,5 @@ Manifest.toml
 # vscode stuff
 .vscode
 .vscode/*
+
+*.ipynb

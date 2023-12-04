@@ -4,8 +4,8 @@ struct FreeStream
     Re::Float64
 end
 
-mutable struct Wave
-    ω::Complex
-    α::Complex
-    β::Complex
-end
+# mutable struct Wave
+#     ω::Number
+#     α::Number
+#     β::Number
+# end

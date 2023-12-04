@@ -8,3 +8,5 @@ struct Shooting{I,IT} <: BVProblemAlgorithm
 end
 
 Shooting() = Shooting(RK4(), Secant())
+
+struct FDM <: BVProblemAlgorithm end

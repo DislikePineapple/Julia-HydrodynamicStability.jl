@@ -1,6 +1,6 @@
 name = "HydrodynamicStability"
 uuid = "7863843b-5d10-4cf2-b9e5-ac583df0c545"
-authors = ["yangsheng <924096229@qq.com> and contributors"]
+authors = ["yangsheng <sheng_y@tju.edu.cn> and contributors"]
 version = "0.0.1"
 
 [deps]
