@@ -81,6 +81,7 @@ function solve(
     maxiters = 1000,
     showiters = false,
     δ = 1e-5,
+    type = "improved",
     kwargs...,
 )
     t0 = float(prob.t0)
@@ -98,11 +99,19 @@ function solve(
         to = map(t -> oftype(one(eltype(t0)), Inf), t)
     end
 
+    if type == "traditional"
+        t = [t0 - δ t0 + δ t0]
+        u = f.(t)
+    end
+
     showiters && println("Muller iteration:")
 
     for n = 1:maxiters
-        t = [t0 - δ t0 + δ t0]
-        u = f.(t)
+
+        if type == "improved"
+            t = [t0 - δ t0 + δ t0]
+            u = f.(t)
+        end
 
         f12 = (u[1] - u[2]) / (t[1] - t[2])
         f13 = (u[1] - u[3]) / (t[1] - t[3])
@@ -116,19 +125,39 @@ function solve(
         denoms = abs(w - sqrt) > abs(w + sqrt) ? w - sqrt : w + sqrt
 
         Δt = 2 * u[3] / denoms
-        t0 -= Δt
+        if type == "improved"
+            t0 -= Δt
 
-        showiters &&
-            @printf "iteration = %i, t0 = %f + %fi, FW = %.3e, BW = %.3e\n" n t0.re t0.im abs(
-                Δt,
-            ) abs(u[3])
+            showiters &&
+                @printf "iteration = %i, t0 = %f + %fi, FW = %.3e, BW = %.3e\n" n t0.re t0.im abs(
+                    Δt,
+                ) abs(u[3])
 
-        iszero(u[3]) && return NonlinearSolution(t0, prob, alg)
+            iszero(u[3]) && return NonlinearSolution(t0, prob, alg)
 
-        isapprox(t0, to, atol = atol, rtol = rtol) &&
-            return NonlinearSolution(t0, prob, alg)
+            isapprox(t0, to, atol = atol, rtol = rtol) &&
+                return NonlinearSolution(t0, prob, alg)
 
-        to = t0
+            to = t0
+        elseif type == "traditional"
+            t[1], t[2] = t[2], t[3]
+            u[1], u[2] = u[2], u[3]
+
+            t[3] = t[3] - Δt
+            u[3] = f(t[3])
+
+            showiters &&
+                @printf "iteration = %i, t0 = %f + %fi, FW = %.3e, BW = %.3e\n" n t[3].re t[3].im abs(
+                    Δt,
+                ) abs(u[3])
+
+            iszero(u[3]) && return NonlinearSolution(t[3], prob, alg)
+            
+            isapprox(t[2], t[3], atol = atol, rtol = rtol) &&
+                return NonlinearSolution(t[3], prob, alg)
+        else
+            error("Type $type is not defined")
+        end
     end
     error("Failed to converge in $maxiters iterations, and t = $t0")
 end
