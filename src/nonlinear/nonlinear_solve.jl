@@ -13,6 +13,9 @@ function solve(
     abstol = nothing,
     reltol = nothing,
     maxiters = 1000,
+    type = "ForwardDiff",
+    δ = 1e-5,
+    showiters = false,
     kwarg...,
 )
     t = float(prob.t0)
@@ -30,14 +33,26 @@ function solve(
         to = map(t -> oftype(one(eltype(t)), Inf), t)
     end
 
+    showiters && println("Secant iteration:")
+
     for n = 1:maxiters
+        u = f(t)
         if t isa Number
-            u = f(t)
-            du = ForwardDiff.derivative(f, t)
+            if type == "ForwardDiff"
+                du = ForwardDiff.derivative(f, t)
+            elseif type == "Derivation"
+                du = Derivation(f, u, t, δ)
+            else
+                error("type $type is not defined")
+            end
         elseif t isa AbstractArray
-            u = f(t)
-            du = ForwardDiff.jacobian(f, t)
-            # du = Jacobin(f, u, t, 1e-5)
+            if type == "ForwardDiff"
+                du = ForwardDiff.jacobian(f, t)
+            elseif type == "Derivation"
+                du = Jacobin(f, u, t, δ)
+            else
+                error("type $type is not defined")
+            end
             # du = FiniteDiff.finite_difference_jacobian(f, t)
         else
             error("Secant only supports Number and AbstactVector types.")
@@ -48,10 +63,19 @@ function solve(
         Δt = du \ u
         t -= Δt
 
+        showiters &&
+            @printf "iteration = %i, t0 = %f , FW = %.3e, BW = %.3e\n" n t abs(Δt) abs(u)
+
         isapprox(t, to, atol = atol, rtol = rtol) && return NonlinearSolution(t, prob, alg)
         to = t
     end
     error("Failed to converge in $maxiters iterations, and t = $t")
+end
+
+function Derivation(f, u0, t0, δ)
+    t = t0 + δ
+    u = f(t)
+    return (u - u0) / δ
 end
 
 # function Jacobin(f, u0, t0, δ)
@@ -98,6 +122,8 @@ function solve(
     else
         to = map(t -> oftype(one(eltype(t0)), Inf), t)
     end
+
+    type != "traditional" && type != "improved" && error("type $type not defined!")
 
     if type == "traditional"
         t = [t0 - δ t0 + δ t0]
@@ -152,11 +178,8 @@ function solve(
                 ) abs(u[3])
 
             iszero(u[3]) && return NonlinearSolution(t[3], prob, alg)
-            
             isapprox(t[2], t[3], atol = atol, rtol = rtol) &&
                 return NonlinearSolution(t[3], prob, alg)
-        else
-            error("Type $type is not defined")
         end
     end
     error("Failed to converge in $maxiters iterations, and t = $t0")
