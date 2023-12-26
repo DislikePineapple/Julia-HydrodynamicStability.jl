@@ -7,7 +7,7 @@ Developed by Sheng for solving eigenvalue problems for hydrodynamic stability sy
 It also need a systems for parameter research.
 """
 
-using ForwardDiff
+using ForwardDiff, LinearAlgebra
 # using FiniteDiff
 
 import Printf: @printf
@@ -57,6 +57,6 @@ export ODEProblem, BVProblem, NonlinearProblem
 export solve
 
 export Secant, Muller, Bisection, Falsi
-export RK4, Shooting
+export RK4, Shooting, FDM
 
 end
