@@ -23,15 +23,7 @@ function solve(prob::ODEProblem, alg::RK4, args...; dy, kwargs...)
     ODESolution(u, y)
 end
 
-function solve(
-    prob::BVProblem,
-    alg::Shooting,
-    args...;
-    dy,
-    abstol = nothing,
-    maxiters = 1000,
-    kwargs...,
-)
+function solve(prob::BVProblem, alg::Shooting, args...; dy, kwargs...)
     @unpack f, bc, yspan, u0, p = prob
     @unpack ivp, iter = alg
 
@@ -45,6 +37,83 @@ function solve(
         return residual
     end
 
-    ic = solve(NonlinearProblem(f_non, u0, p), abstol = abstol, maxiters = maxiters)
+    ic = solve(NonlinearProblem(f_non, u0, p); kwargs...)
     solve(ODEProblem(f, ic.t, yspan, p), ivp, dy = dy)
+end
+
+function solve(prob::BVProblem, alg::FDM, args...; dy, kwarg...)
+    @unpack f, bc, yspan, u0, p = prob
+    T = eltype(u0)
+    O = length(u0)
+
+    y = collect(yspan[1]:dy:yspan[2])
+
+    Ny = length(y)
+    u = Array{Array{T}}(undef, Ny)
+
+    M = zeros(T, Ny * O, Ny * O)
+    B = zeros(T, Ny * O)
+    jac!(M, B, f, bc, y, p, O, T)
+    B = M \ B
+    for i = 1:Ny
+        u[i] = B[(i-1)*O+1:i*O]
+    end
+    ODESolution(u, y)
+end
+
+C1 = [
+    0 0 -1.5 2 -0.5
+    0 -1/3 -0.5 1 -1/6
+    1/12 -2/3 0 2/3 -1/12
+    1/6 -1 0.5 1/3 0
+    1/2 -2 1.5 0 0
+]
+
+function jac!(M, B, f!, bc!, y, p, O, T)
+    M1 = zeros(T, O, O)
+    B1 = zeros(T, O)
+
+    for i in eachindex(y)
+        if i == 1
+            position = 1
+            dy = y[i+1] - y[i]
+        elseif i == 2
+            position = 2
+            dy = (y[i+1] - y[i-1]) / 2
+        elseif i == length(y) - 1
+            position = 4
+            dy = (y[i+1] - y[i-1]) / 2
+        elseif i == length(y)
+            position = 5
+            dy = y[i] - y[i-1]
+        else
+            position = 3
+            dy = (y[i+1] - y[i-1]) / 2
+        end
+        for j in eachindex(y)
+            if i == j
+                f!(M1, B1, p, y[i])
+                ## for the variable parameter ODE, consider later
+                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += -C1[position, 3] * I(O) ./ dy + M1
+                B[(i-1)*O+1:i*O] = B1
+            elseif j == i - 2
+                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += -C1[position, 1] * I(O) ./ dy
+            elseif j == i - 1
+                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += -C1[position, 2] * I(O) ./ dy
+            elseif j == i + 1
+                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += -C1[position, 4] * I(O) ./ dy
+            elseif j == i + 2
+                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += -C1[position, 5] * I(O) ./ dy
+            end
+        end
+    end
+
+    M0 = M[1:O, :]
+    Mend = M[end-O+1:end, :]
+
+    bc!(M0, Mend, B)
+    ## for the need of parameter, consider later
+
+    M[1:O, :] = M0
+    M[end-O+1:end, :] = Mend
 end
