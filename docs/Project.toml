@@ -4,4 +4,4 @@ HydrodynamicStability = "7863843b-5d10-4cf2-b9e5-ac583df0c545"
 
 [compat]
 Documenter = "1"
-HydrodynamicStability = "0.0.1"
+HydrodynamicStability = "0.1.0"
