@@ -41,12 +41,12 @@ function solve(prob::BVProblem, alg::Shooting, args...; dy, kwargs...)
     solve(ODEProblem(f, ic.t, yspan, p), ivp, dy = dy)
 end
 
-function solve(prob::BVProblem, alg::FDM, args...; dy, kwarg...)
+function solve(prob::BVProblem, alg::FDM, args...; kwarg...)
     @unpack f, bc, yspan, u0, p = prob
     T = eltype(u0)
     O = length(u0)
 
-    y = collect(yspan[1]:dy:yspan[2])
+    y = collect(yspan)
 
     Ny = length(y)
     u = Array{Array{T}}(undef, Ny)

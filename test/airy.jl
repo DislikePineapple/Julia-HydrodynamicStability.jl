@@ -18,9 +18,9 @@ function L_bc!(M0, Mend, u)
     u[end-1] = airyai(10)
 end
 
-y = [0, 10]
+y = 0:0.01:10
 u₀ = [0.0, 0.0]
 prob = BVProblem(L_Fun!, L_bc!, u₀, y)
-sol = solve(prob, FDM(); dy = 0.01)
+sol = solve(prob, FDM())
 
 @test isapprox(sol.u[1][2], airyaiprime(0), atol = 1e-5)
