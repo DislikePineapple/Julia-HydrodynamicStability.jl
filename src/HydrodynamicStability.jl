@@ -1,11 +1,10 @@
-module HydrodynamicStability
-
 """
-## HydrodynamicStability
+    HydrodynamicStability
 
 Developed by Sheng for solving eigenvalue problems for hydrodynamic stability systems, including LST, PSE and Receptivity problems.
 It also need a systems for parameter research.
 """
+module HydrodynamicStability
 
 using ForwardDiff, LinearAlgebra
 # using FiniteDiff
@@ -50,7 +49,6 @@ include("ode/ode_solve.jl")
 
 include("nonlinear/nonlinear_problem.jl")
 include("nonlinear/nonlinear_solution.jl")
-# include("nonlinear/nonlinear_algorithm.jl")
 include("nonlinear/nonlinear_solve.jl")
 
 export ODEProblem, BVProblem, NonlinearProblem

@@ -6,3 +6,5 @@ Manifest.toml
 .vscode/*
 
 *.ipynb
+
+data/
