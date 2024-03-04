@@ -1,5 +1,18 @@
 using HydrodynamicStability, Test
 
+"""
+    blasius!(du, u, p, t)
+solve the Blasius equation
+u''' + 1/2 * u * u''' = 0,
+which can be write as the first order ODE system
+u1' = u2
+u2' = u3
+u3' = -1/2 * u1 * u3,
+with the boundary condition
+u1(0) = 0
+u2(0) = 0
+u2 → 1 as y → ∞.
+"""
 function blasius!(du, u, p, t)
     du[1] = u[2]
     du[2] = u[3]
