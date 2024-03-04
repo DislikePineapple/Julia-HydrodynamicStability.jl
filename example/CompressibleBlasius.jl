@@ -27,7 +27,7 @@ for j = 1:length(sol.y)
     grid[1, :, j] = x
 end
 
-# define the flow field
+# define the flow field ρ, u, v, T
 flow = zeros(4, length(x), length(sol.y))
 y, F = [zeros(length(sol.y)) for i = 1:2]
 for i in eachindex(x), j in eachindex(sol.y)

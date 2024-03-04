@@ -1,7 +1,7 @@
 @doc """
 Definde an nonlinear eigenvalue problem, which is used for the instabiliry analysis.
 L(α) = 0,
-where L is the operator, e.g. O-S operator, and α is the eigenvalue for a spatial problem.
+where L is the operator, e.g. O--S operator, and α is the eigenvalue for a spatial problem.
 
 Especially for my problem, it can't be write as a generalized eigenvalue problem.
 

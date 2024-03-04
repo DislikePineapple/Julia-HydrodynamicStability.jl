@@ -19,6 +19,7 @@ import RecipesBase: @recipe
 ## Problem
 abstract type AbstractProblem end
 
+abstract type AbstractPDEProblem <: AbstractProblem end
 abstract type AbstractODEProblem <: AbstractProblem end
 abstract type AbstractBVProblem <: AbstractProblem end
 abstract type AbstractEVProblem <: AbstractProblem end
@@ -35,12 +36,15 @@ abstract type AbstractSolution end
 
 abstract type AbstractNonlinearSolution end
 abstract type AbstractODESolution end
+abstract type AbstractPDESolution end
 abstract type AbstractEVPSolution end
 
 function solve end
 function initial end
 
 struct NullParameter end
+
+include("utils.jl")
 
 include("ode/ode_problem.jl")
 include("ode/ode_solution.jl")
@@ -51,10 +55,16 @@ include("nonlinear/nonlinear_problem.jl")
 include("nonlinear/nonlinear_solution.jl")
 include("nonlinear/nonlinear_solve.jl")
 
+include("pde/pde_problem.jl")
+include("pde/pde_solution.jl")
+include("pde/pde_solve.jl")
+
 export ODEProblem, BVProblem, NonlinearProblem
+export HeatProblem
 export solve
 
 export Secant, Muller, Bisection, Falsi
 export RK4, Shooting, FDM
+export CrankNicolson
 
 end
