@@ -3,8 +3,7 @@ plotlyjs()
 import UnPack: @unpack
 
 include("type.jl")
-include("equations.jl")
-;
+include("equations.jl");
 ## parameter setting
 Ma = 3
 Te = 216.7
@@ -74,7 +73,7 @@ for i = 1:length(x)
 
     ỹ = grid_new[2, i, :]
     interp_linear = LinearInterpolation(grid[2, i, :], flow[1, i, :])
-    j_max  = length(ỹ[isless.(ỹ, grid[2, i, end])])
+    j_max = length(ỹ[isless.(ỹ, grid[2, i, end])])
     flow_new[1, i, 1:j_max] = interp_linear(grid_new[2, i, 1:j_max])
     interp_linear = LinearInterpolation(grid[2, i, :], flow[2, i, :])
     flow_new[2, i, 1:j_max] = interp_linear(grid_new[2, i, 1:j_max])
