@@ -63,8 +63,8 @@ function solve(prob::BVProblem, alg::FDM, args...; kwarg...)
 end
 
 function jac!(M, B, f!, bc!, p, y, O, T)
-    M1 = zeros(T, O, O)
-    B1 = zeros(T, O)
+    A, D = [zeros(T, O, O) for _ = 1:2]
+    F = zeros(T, O)
 
     for i in eachindex(y)
 
@@ -86,22 +86,22 @@ function jac!(M, B, f!, bc!, p, y, O, T)
         end
 
         for j in eachindex(y)
+            if p isa NullParameter || p[1] isa Number
+                f!(A, D, F, p, y[i])
+            else
+                f!(A, D, F, p[i], y[i])
+            end
             if i == j
-                if p isa NullParameter || p[1] isa Number
-                    f!(M1, B1, p, y[i])
-                else
-                    f!(M1, B1, p[i], y[i])
-                end
-                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 3] * I(O) ./ dy - M1
-                B[(i-1)*O+1:i*O] = B1
+                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 3] .* A ./ dy - D
+                B[(i-1)*O+1:i*O] = F
             elseif j == i - 2
-                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 1] * I(O) ./ dy
+                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 1] .* A ./ dy
             elseif j == i - 1
-                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 2] * I(O) ./ dy
+                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 2] .* A ./ dy
             elseif j == i + 1
-                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 4] * I(O) ./ dy
+                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 4] .* A ./ dy
             elseif j == i + 2
-                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 5] * I(O) ./ dy
+                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 5] .* A ./ dy
             end
         end
     end

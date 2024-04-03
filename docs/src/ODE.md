@@ -5,7 +5,7 @@ The general govening equation can be written as
 $$ y' = f(y,t), $$
 which implies the equations are reduced to first-order vector form.
 The above equations take the matrix form
-$$ I\boldsymbol{y}' = M\boldsymbol{y} + B. $$
+$$ A\boldsymbol{y}' = D\boldsymbol{y} + F. $$
 
 ## The discrete schemes
 4-order center differential is used 

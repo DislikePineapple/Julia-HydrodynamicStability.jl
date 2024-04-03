@@ -13,12 +13,15 @@ using HydrodynamicStability, Test, SpecialFunctions
     where Ai(x) is the Airy function of the first kind.
 """
 
-function Airy_fun!(M, B, p, t)
-    M[1, 2] = 1
-    M[2, 1] = t
+function Airy_fun!(A, D, F, p, t)
+    A[1, 1] = 1
+    A[2, 2] = 1
 
-    B[1] = 0
-    B[2] = 0
+    D[1, 2] = 1
+    D[2, 1] = t
+
+    F[1] = 0
+    F[2] = 0
 end
 
 function Airy_bc!(M0, Mend, u)
