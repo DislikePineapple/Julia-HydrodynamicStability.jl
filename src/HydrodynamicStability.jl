@@ -65,6 +65,5 @@ export solve
 
 export Secant, Muller, Bisection, Falsi
 export RK4, Shooting, FDM
-export CrankNicolson
 
 end

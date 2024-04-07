@@ -42,57 +42,49 @@ function solve(prob::BVProblem, alg::Shooting, args...; dy, kwargs...)
 end
 
 function solve(prob::BVProblem, alg::FDM, args...; kwarg...)
-    @unpack f, bc, yspan, u0, p = prob
+    @unpack yspan, u0 = prob
+    T = eltype(u0)
+    O = length(u0)
+
+    y = collect(yspan)
+    u = Array{Array{T}}(undef, length(y))
+
+    M, B = jac(prob)
+    B = M \ B
+
+    for i = 1:length(y)
+        u[i] = B[(i-1)*O+1:i*O]
+    end
+    ODESolution(u, y)
+end
+
+function jac(prob::BVProblem)
+    @unpack f, bc, p, yspan, u0 = prob
     T = eltype(u0)
     O = length(u0)
 
     y = collect(yspan)
 
     ny = length(y)
-    u = Array{Array{T}}(undef, ny)
 
     M = zeros(T, ny * O, ny * O)
     B = zeros(T, ny * O)
 
-    jac!(M, B, f, bc, p, y, O, T)
-    B = M \ B
-    for i = 1:ny
-        u[i] = B[(i-1)*O+1:i*O]
-    end
-    ODESolution(u, y)
-end
-
-function jac!(M, B, f!, bc!, p, y, O, T)
     A, D = [zeros(T, O, O) for _ = 1:2]
     F = zeros(T, O)
 
     for i in eachindex(y)
 
-        if i == 1
-            position = 1
-            dy = y[i+1] - y[i]
-        elseif i == 2
-            position = 2
-            dy = (y[i+1] - y[i-1]) / 2
-        elseif i == length(y) - 1
-            position = 4
-            dy = (y[i+1] - y[i-1]) / 2
-        elseif i == length(y)
-            position = 5
-            dy = y[i] - y[i-1]
-        else
-            position = 3
-            dy = (y[i+1] - y[i-1]) / 2
-        end
+        position, dy = fun_position(y, i)
 
         for j in eachindex(y)
             if p isa NullParameter || p[1] isa Number
-                f!(A, D, F, p, y[i])
+                f(A, D, F, p, y[i])
             else
-                f!(A, D, F, p[i], y[i])
+                f(A, D, F, p[i], y[i])
             end
             if i == j
-                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 3] .* A ./ dy - D
+                M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 3] .* A ./ dy + D
                 B[(i-1)*O+1:i*O] = F
             elseif j == i - 2
                 M[(i-1)*O+1:i*O, (j-1)*O+1:j*O] += C1[position, 1] .* A ./ dy
@@ -109,8 +101,30 @@ function jac!(M, B, f!, bc!, p, y, O, T)
     M0 = M[1:O, :]
     Mend = M[end-O+1:end, :]
 
-    bc!(M0, Mend, B)
+    bc(M0, Mend, B)
 
     M[1:O, :] = M0
     M[end-O+1:end, :] = Mend
+
+    return M, B
+end
+
+function fun_position(y, i)
+    if i == 1
+        position = 1
+        dy = y[i+1] - y[i]
+    elseif i == 2
+        position = 2
+        dy = (y[i+1] - y[i-1]) / 2
+    elseif i == length(y) - 1
+        position = 4
+        dy = (y[i+1] - y[i-1]) / 2
+    elseif i == length(y)
+        position = 5
+        dy = y[i] - y[i-1]
+    else
+        position = 3
+        dy = (y[i+1] - y[i-1]) / 2
+    end
+    return position, dy
 end

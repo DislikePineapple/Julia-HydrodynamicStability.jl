@@ -42,3 +42,16 @@ function central_difference(f, x)
         (x[end] - x[end-1])
     return df
 end
+
+function simpsons_integral(df, x; f0 = 0)
+    f = zeros(typeof(df[1]), length(df))
+    for i in eachindex(x)
+        i == 1 && (f[i] = f0; continue)
+        if isodd(i)
+            f[i] = f[i-2] + (df[i] + 4 * df[i-1] + df[i-2]) / 6 * (x[i] - x[i-2])
+        else
+            f[i] = f[i-1] + (df[i] + df[i-1]) / 2 * (x[i] - x[i-1])
+        end
+    end
+    return f
+end
