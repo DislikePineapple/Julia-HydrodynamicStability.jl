@@ -1,7 +1,7 @@
 name = "HydrodynamicStability"
 uuid = "7863843b-5d10-4cf2-b9e5-ac583df0c545"
 authors = ["DislikePinapple <sheng_y@tju.edu.cn> and contributors"]
-version = "0.1.2"
+version = "0.1.3"
 
 [deps]
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
