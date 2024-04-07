@@ -59,6 +59,8 @@ include("pde/pde_problem.jl")
 include("pde/pde_solution.jl")
 include("pde/pde_solve.jl")
 
+export central_difference, simpsons_integral
+
 export ODEProblem, BVProblem, NonlinearProblem
 export HeatProblem
 export solve
