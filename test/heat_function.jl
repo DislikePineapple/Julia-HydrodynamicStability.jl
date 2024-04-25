@@ -4,11 +4,18 @@ using HydrodynamicStability, Test
     solve the Heat equation for the test of PDEProblem
 """
 
-nt = 201
-nx = 201
+nt = 101
+nx = 101
+ny = 101
 lt = 1
 lx = 1
+lys = -π
+lye = π
 
+Ny = 4
+
+xspan = range(0, lx, nx)
+tspan = range(0, lt, nt)
 mesh = zeros(2, nt, nx)
 
 for i = 1:nt, j = 1:nx
@@ -16,14 +23,14 @@ for i = 1:nt, j = 1:nx
     mesh[2, i, j] = (j - 1) * lx / (nx - 1)
 end
 
-function heat_fun!(Vxx, A, Γ, D, F, p)
+function heat_fun!(Vxx, A, Γ, D, p)
     λ, = p
     A[1, 1] = 1
     A[2, 2] = 1
     Γ[2, 1] = -λ
     D[1, 2] = -1
 end
-
+function imhomo!(F, p) end
 function heat_bc!(M0, Mend, u, p)
     x₀, x∞ = p
     M0[2, :] .= 0
@@ -34,27 +41,44 @@ function heat_bc!(M0, Mend, u, p)
     u[2] = x₀
     u[end] = x∞
 end
+funs = (heat_fun!, imhomo!, heat_bc!)
 
-ic = Array{Array{Float64}}(undef, nx)
+ic = zeros(2, nx)
 for i = 1:nx
-    ic[i] =
-        [sin(2π * mesh[2, 1, i])^2, 4π * cos(2π * mesh[2, 1, i]) * sin(2π * mesh[2, 1, i])]
+    ic[1, i] = sin(2π * xspan[i])^2
+    ic[2, i] = 4π * cos(2π * xspan[i]) * sin(2π * xspan[i])
 end
+fp = ones(1, nt, nx)
+bcp = zeros(2, nt)
+paras = (fp, nothing, ic, bcp)
 
-f_para = Array{Array{Float64}}(undef, nt, nx)
-bc_para = Array{Array{Float64}}(undef, nt)
-
-for i = 1:nt
-    for j = 1:nx
-        f_para[i, j] = [1]
-    end
-    bc_para[i] = [0, 0]
-end
-
-prob = HeatProblem(mesh, heat_fun!, heat_bc!, ic, f_para, bc_para)
+prob = HeatProblem(mesh, funs, paras)
 sol = solve(prob, FDM())
 
-@test sol.flow[1, 1, :] == sin.(2π * mesh[2, 1, :]) .^ 2
+@test sol.flow[1, 1, :, :] == sin.(2π * mesh[2, 1, :, :]) .^ 2
 @test isapprox(maximum(sol.flow[1, end, :]), 0.0, atol = 1e-4)
 
 # TODO find the reason why the result is oscillating, Runga's phenomenon ?
+
+## test NSHeatProblem solved by NSFDM
+mesh = zeros(3, nt, nx, ny)
+for i = 1:nt, j = 1:nx, k = 1:ny
+    mesh[1, i, j, k] = (i - 1) * lt / (nt - 1)
+    mesh[2, i, j, k] = (j - 1) * lx / (nx - 1)
+    mesh[3, i, j, k] = (k - 1) * (lye - lys) / (ny - 1) + lys
+end
+
+ic = zeros(2, nx, ny)
+for i = 1:nx
+    ic[1, i, :] .= sin(2π * xspan[i])^2
+    ic[2, i, :] .= 4π * cos(2π * xspan[i]) * sin(2π * xspan[i])
+end
+fp = ones(1, nt, nx, ny)
+bcp = zeros(2, nt, ny)
+paras = (fp, nothing, ic, bcp)
+
+prob = NSHeatProblem(mesh, Ny, funs, paras)
+NSsol = solve(prob, NSFDM())
+
+@test isapprox(NSsol.flow[1, 1, :, 1], sin.(2π .* xspan) .^ 2, atol = 1e-9)
+@test isapprox(maximum(sol.flow[:, :, :] - NSsol.flow[:, :, :, 1]), 0.0, atol = 1e-9)

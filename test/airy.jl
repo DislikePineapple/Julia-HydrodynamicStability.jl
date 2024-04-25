@@ -25,13 +25,13 @@ function Airy_fun!(A, D, F, p, t)
 end
 
 function Airy_bc!(M0, Mend, u)
-    M0[1, :] .= 0
-    M0[1, 1] = 1
-    Mend[1, :] .= 0
-    Mend[1, end-1] = 1
+    M0[2, :] .= 0
+    M0[2, 1] = 1
+    Mend[2, :] .= 0
+    Mend[2, end-1] = 1
 
-    u[1] = airyai(0)
-    u[end-1] = airyai(10)
+    u[2] = airyai(0)
+    u[end] = airyai(10)
 end
 
 y = 0:0.01:10
