@@ -145,20 +145,15 @@ function FDM_D(y)
             dy = (y[i + 1] - y[i - 1]) / 2
         end
         for j in eachindex(y)
-            if p isa NullParameter || p[1] isa Number
-                f(A, D, F, p, y[i])
-            else
-                f(A, D, F, p[i], y[i])
-            end
-            if i == j
-                D[i, j] = C1[position, 3] / dy
-                D2[i, j] = C2[position, 3] / dy^2
-            elseif j == i - 2
+            if j == i - 2
                 D[i, j] = C1[position, 1] / dy
                 D2[i, j] = C2[position, 1] / dy^2
             elseif j == i - 1
                 D[i, j] = C1[position, 2] / dy
                 D2[i, j] = C2[position, 2] / dy^2
+            elseif i == j
+                D[i, j] = C1[position, 3] / dy
+                D2[i, j] = C2[position, 3] / dy^2
             elseif j == i + 1
                 D[i, j] = C1[position, 4] / dy
                 D2[i, j] = C2[position, 4] / dy^2
