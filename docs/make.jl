@@ -5,15 +5,12 @@ include("pages.jl")
 makedocs(
     sitename = "HydrodynamicStability.jl",
     authors = "Sheng Yang",
-    # modules = [HydrodynamicStability],
-    # clean = true, doctest = false, linkcheck = true,
-    # format=Documenter.HTML(
-    # # assets=["assets/favicon.ico"],
-    # canonical = "https://super-popar-bear.github.io/HydrodynamicStability/"),
+    modules = [HydrodynamicStability],
+    clean = true, doctest = false, linkcheck = true,
     pages = pages
 )
 
 deploydocs(
-    repo = "github.com/DislikePineapple/HydrodynamicStability.jl.git";
+    repo = "github.com/DislikePineapple/Julia-HydrodynamicStability.jl.git";
     push_preview = true
 )
