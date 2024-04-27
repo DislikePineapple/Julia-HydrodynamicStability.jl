@@ -1,7 +1,7 @@
 """
 Define the solution of the partial differential equation.
 """
-struct HeatSolution{uType,yType,P,A,uType2,RT} <: AbstractPDESolution
+struct HeatSolution{uType, yType, P, A, uType2, RT} <: AbstractPDESolution
     grid::yType
     flow::uType
 

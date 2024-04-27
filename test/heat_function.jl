@@ -18,7 +18,7 @@ xspan = range(0, lx, nx)
 tspan = range(0, lt, nt)
 mesh = zeros(2, nt, nx)
 
-for i = 1:nt, j = 1:nx
+for i in 1:nt, j in 1:nx
     mesh[1, i, j] = (i - 1) * lt / (nt - 1)
     mesh[2, i, j] = (j - 1) * lx / (nx - 1)
 end
@@ -31,12 +31,12 @@ function heat_fun!(Vxx, A, Γ, D, p)
     D[1, 2] = -1
 end
 function imhomo!(F, p) end
-function heat_bc!(M0, Mend, u, p)
+function heat_bc!(M, u, p)
     x₀, x∞ = p
-    M0[2, :] .= 0
-    M0[2, 1] = 1
-    Mend[2, :] .= 0
-    Mend[2, end-1] = 1
+    M[2, :] .= 0
+    M[2, 1] = 1
+    M[end, :] .= 0
+    M[end, end - 1] = 1
 
     u[2] = x₀
     u[end] = x∞
@@ -44,7 +44,7 @@ end
 funs = (heat_fun!, imhomo!, heat_bc!)
 
 ic = zeros(2, nx)
-for i = 1:nx
+for i in 1:nx
     ic[1, i] = sin(2π * xspan[i])^2
     ic[2, i] = 4π * cos(2π * xspan[i]) * sin(2π * xspan[i])
 end
@@ -62,14 +62,14 @@ sol = solve(prob, FDM())
 
 ## test NSHeatProblem solved by NSFDM
 mesh = zeros(3, nt, nx, ny)
-for i = 1:nt, j = 1:nx, k = 1:ny
+for i in 1:nt, j in 1:nx, k in 1:ny
     mesh[1, i, j, k] = (i - 1) * lt / (nt - 1)
     mesh[2, i, j, k] = (j - 1) * lx / (nx - 1)
     mesh[3, i, j, k] = (k - 1) * (lye - lys) / (ny - 1) + lys
 end
 
 ic = zeros(2, nx, ny)
-for i = 1:nx
+for i in 1:nx
     ic[1, i, :] .= sin(2π * xspan[i])^2
     ic[2, i, :] .= 4π * cos(2π * xspan[i]) * sin(2π * xspan[i])
 end

@@ -1,7 +1,7 @@
 @doc """
 Definde the ordinary differential equations solution
 """
-struct ODESolution{uType,yType,P,A,uType2,RT} <: AbstractODESolution
+struct ODESolution{uType, yType, P, A, uType2, RT} <: AbstractODESolution
     u::uType
     y::yType
 

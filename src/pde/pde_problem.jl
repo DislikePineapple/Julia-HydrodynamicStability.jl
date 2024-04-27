@@ -7,7 +7,7 @@ V_{xx}\frac{∂^2 u_{i,j}}{∂ x^2} + A\frac{∂ u_{i,j}}{∂ x} + D u_{i,j} + \
 where `u` is the baseflow, `x` is the spatial coordinate, `t` is the time, the parameter should take the form of [V_{xx}, A, D, Γ, F], in where each element is a two-dimetional array.
 """
 
-struct HeatProblem{G,F,I,IC,BC,FP,IP,BP,K} <: AbstractPDEProblem
+struct HeatProblem{G, F, I, IC, BC, FP, IP, BP, K} <: AbstractPDEProblem
     grid::G
 
     fun::F
@@ -23,15 +23,15 @@ struct HeatProblem{G,F,I,IC,BC,FP,IP,BP,K} <: AbstractPDEProblem
     kwarg::K
 
     function HeatProblem(
-        g,
-        f,
-        im,
-        ic,
-        bc,
-        fp = NullParameter(),
-        ip = NullParameter(),
-        bp = NullParameter(),
-        kwarg...,
+            g,
+            f,
+            im,
+            ic,
+            bc,
+            fp = NullParameter(),
+            ip = NullParameter(),
+            bp = NullParameter(),
+            kwarg...
     )
         new{
             typeof(g),
@@ -42,7 +42,7 @@ struct HeatProblem{G,F,I,IC,BC,FP,IP,BP,K} <: AbstractPDEProblem
             typeof(fp),
             typeof(ip),
             typeof(bp),
-            typeof(kwarg),
+            typeof(kwarg)
         }(
             g,
             f,
@@ -52,7 +52,7 @@ struct HeatProblem{G,F,I,IC,BC,FP,IP,BP,K} <: AbstractPDEProblem
             fp,
             ip,
             bp,
-            kwarg,
+            kwarg
         )
     end
 end
@@ -63,7 +63,7 @@ function HeatProblem(grid, funs, paras)
     HeatProblem(grid, fun, imhomo, ic, bc, fun_para, im_para, bc_para)
 end
 
-struct NSHeatProblem{G,Int,FUN,IM,IC,BC,FP,IMP,BCP,K} <: AbstractPDEProblem
+struct NSHeatProblem{G, Int, FUN, IM, IC, BC, FP, IMP, BCP, K} <: AbstractPDEProblem
     grid::G
     Ny::Int
 
@@ -77,20 +77,19 @@ struct NSHeatProblem{G,Int,FUN,IM,IC,BC,FP,IMP,BCP,K} <: AbstractPDEProblem
     imhomo_para::IMP
     bc_para::BCP
 
-
     kwarg::K
 
     function NSHeatProblem(
-        grid,
-        Ny,
-        fun,
-        imhomo,
-        ic,
-        bc,
-        fun_para,
-        im_para,
-        bc_para,
-        kwarg...,
+            grid,
+            Ny,
+            fun,
+            imhomo,
+            ic,
+            bc,
+            fun_para,
+            im_para,
+            bc_para,
+            kwarg...
     )
         new{
             typeof(grid),
@@ -102,7 +101,7 @@ struct NSHeatProblem{G,Int,FUN,IM,IC,BC,FP,IMP,BCP,K} <: AbstractPDEProblem
             typeof(fun_para),
             typeof(im_para),
             typeof(bc_para),
-            typeof(kwarg),
+            typeof(kwarg)
         }(
             grid,
             Ny,
@@ -113,7 +112,7 @@ struct NSHeatProblem{G,Int,FUN,IM,IC,BC,FP,IMP,BCP,K} <: AbstractPDEProblem
             fun_para,
             im_para,
             bc_para,
-            kwarg,
+            kwarg
         )
     end
 end

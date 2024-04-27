@@ -75,9 +75,8 @@ function similarity!(du, u, fs, t) # u[1] = f, u[2] = f', u[3] = g, u[4] = f'', 
     du[3] = -u[1] * u[3] / C(u[5], Te) - Cprime_over_C(u[5], u[6], Te) * u[3]
     du[4] = u[5]
     du[5] = u[6]
-    du[6] =
-        -Pr * u[1] * u[6] / C(u[5], Te) - Cprime_over_C(u[5], u[6], Te) * u[6] -
-        Pr * (γ - 1) * Ma^2 * u[3]^2
+    du[6] = -Pr * u[1] * u[6] / C(u[5], Te) - Cprime_over_C(u[5], u[6], Te) * u[6] -
+            Pr * (γ - 1) * Ma^2 * u[3]^2
 end
 
 """
@@ -115,13 +114,13 @@ function compressibleBlasius(fs::FreeStream; δ = nothing)
     # define the domain and give the streamwise grid
     x = 0.75:0.005:4
     grid = zeros(2, length(x), length(sol.y))
-    for j = 1:length(sol.y)
+    for j in 1:length(sol.y)
         grid[1, :, j] = x
     end
 
     # define the flow field ρ, u, v, T
     flow = zeros(4, length(x), length(sol.y))
-    y, f = [zeros(length(sol.y)) for _ = 1:2]
+    y, f = [zeros(length(sol.y)) for _ in 1:2]
     for j in eachindex(sol.y)
         flow[1, :, j] .= 1 / sol.u[j][5] # ρ
         flow[2, :, j] .= sol.u[j][2] # u
@@ -155,8 +154,8 @@ function compressibleBlasius(fs::FreeStream; δ = nothing)
         end
         # solve normal velocity v
         for i in eachindex(x)
-            flow[3, i, :] =
-                -1 / sqrt(2 * x[i] / L * fs.Re) * (f .* flow[4, i, :] - y .* flow[2, i, :])
+            flow[3, i, :] = -1 / sqrt(2 * x[i] / L * fs.Re) *
+                            (f .* flow[4, i, :] - y .* flow[2, i, :])
         end
     end
     return grid, flow

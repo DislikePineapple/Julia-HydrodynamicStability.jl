@@ -10,10 +10,10 @@ makedocs(
     # format=Documenter.HTML(
     # # assets=["assets/favicon.ico"],
     # canonical = "https://super-popar-bear.github.io/HydrodynamicStability/"),
-    pages = pages,
+    pages = pages
 )
 
 deploydocs(
     repo = "github.com/DislikePineapple/HydrodynamicStability.jl.git";
-    push_preview = true,
+    push_preview = true
 )

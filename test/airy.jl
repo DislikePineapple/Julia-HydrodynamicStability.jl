@@ -13,30 +13,27 @@ using HydrodynamicStability, Test, SpecialFunctions
     where Ai(x) is the Airy function of the first kind.
 """
 
-function Airy_fun!(A, D, F, p, t)
-    A[1, 1] = 1
-    A[2, 2] = 1
-
+function Airy_fun!(D, F, p, t)
     D[1, 2] = -1
     D[2, 1] = -t
-
-    F[1] = 0
-    F[2] = 0
 end
 
-function Airy_bc!(M0, Mend, u)
-    M0[2, :] .= 0
-    M0[2, 1] = 1
-    Mend[2, :] .= 0
-    Mend[2, end-1] = 1
+function Airy_bc!(M, u)
+    M[2, :] .= 0
+    M[2, 1] = 1
+    M[end, :] .= 0
+    M[end, end - 1] = 1
 
     u[2] = airyai(0)
     u[end] = airyai(10)
 end
 
-y = 0:0.01:10
+yspan = (0, 10)
 u₀ = [0.0, 0.0]
-prob = BVProblem(Airy_fun!, Airy_bc!, u₀, y)
-sol = solve(prob, FDM())
+prob = BVProblem(Airy_fun!, Airy_bc!, u₀, yspan)
 
-@test isapprox(sol.u[1][2], airyaiprime(0), atol = 1e-5)
+sol = solve(prob, FDM(); ny = 1001)
+csol = solve(prob, CFDM(); ny = 32)
+
+@test isapprox(sol.u[2, 1], airyaiprime(0), atol = 1e-6)
+@test isapprox(csol.u[2, 1], airyaiprime(0))
