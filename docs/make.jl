@@ -5,8 +5,8 @@ include("pages.jl")
 makedocs(
     sitename = "HydrodynamicStability.jl",
     authors = "Sheng Yang",
-    modules = [HydrodynamicStability],
-    clean = true, doctest = false, linkcheck = true,
+    # modules = [HydrodynamicStability],
+    # clean = true, doctest = false, linkcheck = true,
     pages = pages
 )
 
