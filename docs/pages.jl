@@ -2,6 +2,7 @@
 
 pages = [
     "Home" => "index.md",
-    "ODE" => "ODE.md",
-    "PDE" => "PDE.md"
+    "Problems" => Any[
+        "Problems/ode.md",
+        "Problems/pde.md"]
 ]

@@ -1,4 +1,5 @@
-# Backward finite differential method to solve parabilic PDE
+# PDE problems
+Using backward finite differential method to solve the parabolic partial differential equations.
 
 ## The eqution to be solved
 

@@ -1,5 +1,5 @@
 # Hydrodynamic Stability Toolkit
-[![Global Docs](https://img.shields.io/badge/docs-HST-blue.svg)](https://dislikepineapple.github.io/Julia-HydrodynamicStability.jl/stable/)
+[![Global Docs](https://img.shields.io/badge/docs-HST-blue.svg)](https://dislikepineapple.github.io/Julia-HydrodynamicStability.jl/dev/)
 
 ## Introduction
 

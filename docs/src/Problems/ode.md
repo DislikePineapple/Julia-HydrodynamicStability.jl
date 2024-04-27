@@ -1,4 +1,5 @@
-# Finit differential method to solve ordianary diffential equations
+# ODE problems
+Solve ordianary diffential equations with finit differential method.
 
 ## Boundary value problem
 The general govening equation can be written as
