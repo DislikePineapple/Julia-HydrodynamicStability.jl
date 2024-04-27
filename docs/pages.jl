@@ -2,6 +2,6 @@
 
 pages = [
     "Home" => "index.md",
-    "ODE" => "ode.md",
-    "PDE" => "pde.md"
+    "ODE" => "ODE.md",
+    "PDE" => "PDE.md"
 ]
