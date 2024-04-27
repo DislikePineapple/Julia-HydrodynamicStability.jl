@@ -15,7 +15,7 @@ Define a linear stavility problem that is solved for a compressible flate bounda
 
 Define the ODEs problem
 """
-struct ODEProblem{F,uType,yType,P,K} <: AbstractODEProblem
+struct ODEProblem{F, uType, yType, P, K} <: AbstractODEProblem
     f::F
     u0::uType
     yspan::yType
@@ -23,12 +23,12 @@ struct ODEProblem{F,uType,yType,P,K} <: AbstractODEProblem
     kwarg::K
 
     function ODEProblem(f, u0, yspan, p = NullParameter(); kwargs...)
-        new{typeof(f),typeof(u0),typeof(yspan),typeof(p),typeof(kwargs)}(
+        new{typeof(f), typeof(u0), typeof(yspan), typeof(p), typeof(kwargs)}(
             f,
             u0,
             yspan,
             p,
-            kwargs,
+            kwargs
         )
     end
 end
@@ -47,7 +47,7 @@ Define a boundary Value problem
 - `p`: The parameters for the problem. Defaults to `NullParameters`
 - `kwargs`: The keyword arguments.
 """
-struct BVProblem{F,BC,U0,Y,P,K} <: AbstractBVProblem
+struct BVProblem{F, BC, U0, Y, P, K} <: AbstractBVProblem
     f::F
     bc::BC
     u0::U0
@@ -56,13 +56,13 @@ struct BVProblem{F,BC,U0,Y,P,K} <: AbstractBVProblem
     kwargs::K
 
     function BVProblem(f, bc, u0, yspan, p = NullParameter(); kwargs...)
-        new{typeof(f),typeof(bc),typeof(u0),typeof(yspan),typeof(p),typeof(kwargs)}(
+        new{typeof(f), typeof(bc), typeof(u0), typeof(yspan), typeof(p), typeof(kwargs)}(
             f,
             bc,
             u0,
             yspan,
             p,
-            kwargs,
+            kwargs
         )
     end
 end

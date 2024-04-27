@@ -269,5 +269,3 @@ $$
     \tilde{v}=-\frac{1}{\sqrt{2x}}\left(f_B\tilde{T}-\int_0^\eta \tilde{T}\mathrm{d}\eta^{\dag}f_B'\right).
 \end{gather}
 $$
-
-After that we need to solver the 

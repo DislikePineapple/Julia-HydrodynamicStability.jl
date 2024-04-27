@@ -1,4 +1,4 @@
-struct EVPSolution{V,E,P,A,RT} <: AbstractEVPSolution
+struct EVPSolution{V, E, P, A, RT} <: AbstractEVPSolution
     ev::V
     ef::E
 

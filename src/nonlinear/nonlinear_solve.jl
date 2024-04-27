@@ -7,24 +7,23 @@ struct Secant <: NonlinearAlgorithm end
 solve(prob::NonlinearProblem; kwarg...) = solve(prob::NonlinearProblem, Secant(); kwarg...)
 
 function solve(
-    prob::NonlinearProblem,
-    alg::Secant,
-    arg...;
-    abstol = nothing,
-    reltol = nothing,
-    maxiters = 1000,
-    type = "ForwardDiff",
-    δ = 1e-5,
-    showiters = false,
-    kwarg...,
+        prob::NonlinearProblem,
+        alg::Secant,
+        arg...;
+        abstol = nothing,
+        reltol = nothing,
+        maxiters = 1000,
+        type = "ForwardDiff",
+        δ = 1e-5,
+        showiters = false,
+        kwarg...
 )
     t = float(prob.t0)
     f(t) = prob.f(t, prob.p)
     T = typeof(t)
 
-    atol =
-        abstol !== nothing ? abstol :
-        real(oneunit(eltype(T))) * (eps(real(one(eltype(T)))))^(4 // 5)
+    atol = abstol !== nothing ? abstol :
+           real(oneunit(eltype(T))) * (eps(real(one(eltype(T)))))^(4 // 5)
     rtol = reltol !== nothing ? reltol : eps(real(one(eltype(T))))^(4 // 5)
 
     if t isa Number
@@ -35,7 +34,7 @@ function solve(
 
     showiters && println("Secant iteration:")
 
-    for n = 1:maxiters
+    for n in 1:maxiters
         u = f(t)
         if t isa Number
             if type == "ForwardDiff"
@@ -97,24 +96,23 @@ end
 # end
 
 function solve(
-    prob::NonlinearProblem,
-    alg::Muller,
-    arg...;
-    abstol = nothing,
-    reltol = nothing,
-    maxiters = 1000,
-    showiters = false,
-    δ = 1e-5,
-    type = "improved",
-    kwargs...,
+        prob::NonlinearProblem,
+        alg::Muller,
+        arg...;
+        abstol = nothing,
+        reltol = nothing,
+        maxiters = 1000,
+        showiters = false,
+        δ = 1e-5,
+        type = "improved",
+        kwargs...
 )
     t0 = float(prob.t0)
     f(t) = prob.f(t, prob.p; kwargs...)
     T = typeof(t0)
 
-    atol =
-        abstol !== nothing ? abstol :
-        real(oneunit(eltype(T))) * (eps(real(one(eltype(T)))))^(4 // 5)
+    atol = abstol !== nothing ? abstol :
+           real(oneunit(eltype(T))) * (eps(real(one(eltype(T)))))^(4 // 5)
     rtol = reltol !== nothing ? reltol : eps(real(one(eltype(T))))^(4 // 5)
 
     if t0 isa Number
@@ -132,8 +130,7 @@ function solve(
 
     showiters && println("Muller iteration:")
 
-    for n = 1:maxiters
-
+    for n in 1:maxiters
         if type == "improved"
             t = [t0 - δ t0 + δ t0]
             u = f.(t)

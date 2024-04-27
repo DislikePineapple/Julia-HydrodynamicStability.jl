@@ -8,7 +8,7 @@ Especially for my problem, it can't be write as a generalized eigenvalue problem
     f: the operator to be solved
     v0: the guess of eigenvalue for the problem
 """
-struct EVProblem{F,V,P,K} <: AbstractEVProblem
+struct EVProblem{F, V, P, K} <: AbstractEVProblem
     f::F
     v0::V
 
@@ -16,6 +16,6 @@ struct EVProblem{F,V,P,K} <: AbstractEVProblem
     kwarg::K
 
     function EVProblem(f, v0, p = NullParameters; kwarg...)
-        new{typeof(f),typeof(v0),typeof(p),typeof(kwarg)}(f, v0, p, kwarg)
+        new{typeof(f), typeof(v0), typeof(p), typeof(kwarg)}(f, v0, p, kwarg)
     end
 end

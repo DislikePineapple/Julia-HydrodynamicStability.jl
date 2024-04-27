@@ -1,4 +1,4 @@
-struct NonlinearSolution{tType,P,A,tType2,RT} <: AbstractNonlinearSolution
+struct NonlinearSolution{tType, P, A, tType2, RT} <: AbstractNonlinearSolution
     t::tType
 
     prob::P

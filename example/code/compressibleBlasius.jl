@@ -42,29 +42,28 @@ end
 
 for i in eachindex(x)
     j_max = findlast(grid_new[2, i, :] .< grid[2, i, end])
-    for n = 1:4
+    for n in 1:4
         interp_linear = linear_interpolation(grid[2, i, :], flow[n, i, :])
         flow_new[n, i, 1:j_max] = interp_linear(grid_new[2, i, 1:j_max])
-        for j = j_max+1:ny_new
+        for j in (j_max + 1):ny_new
             flow_new[n, i, j] = flow_new[n, i, j_max]
         end
     end
 end
 
 # ∂(ρu)∂x + ∂(ρv)∂y = 0
-ρuₓ, v = [zeros(size(flow_new[2, :, :])) for _ = 1:2]
+ρuₓ, v = [zeros(size(flow_new[2, :, :])) for _ in 1:2]
 # ∂(ρu)∂x
 for j in eachindex(grid_new[2, 1, :])
     ρuₓ[:, j] = HydrodynamicStability.central_difference(
         flow_new[1, :, j] .* flow_new[2, :, j],
-        grid_new[1, :, j],
+        grid_new[1, :, j]
     )
 end
 # ∂(ρv)∂y
 for i in eachindex(grid[1, :, 1])
-    v[i, :] =
-        HydrodynamicStability.simpsons_integral(-ρuₓ[i, :], grid_new[2, i, :]) ./
-        flow_new[1, i, :]
+    v[i, :] = HydrodynamicStability.simpsons_integral(-ρuₓ[i, :], grid_new[2, i, :]) ./
+              flow_new[1, i, :]
 end
 
 # plot for check v ---------------------------------

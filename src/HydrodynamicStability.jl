@@ -6,8 +6,8 @@ It also need a systems for parameter research.
 """
 module HydrodynamicStability
 
-using ForwardDiff, LinearAlgebra
-# using FiniteDiff
+using ForwardDiff, LinearAlgebra, FFTW
+using ProgressMeter
 
 import Printf: @printf
 import UnPack: @unpack
@@ -59,11 +59,14 @@ include("pde/pde_problem.jl")
 include("pde/pde_solution.jl")
 include("pde/pde_solve.jl")
 
+export central_difference, simpsons_integral, chebyshev
+export fft_expand, ifft_expand
+
 export ODEProblem, BVProblem, NonlinearProblem
-export HeatProblem
+export HeatProblem, NSHeatProblem
 export solve
 
 export Secant, Muller, Bisection, Falsi
-export RK4, Shooting, FDM
+export RK4, Shooting, FDM, CFDM, NSFDM
 
 end
