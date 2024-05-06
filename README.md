@@ -1,5 +1,6 @@
 # Hydrodynamic Stability Toolkit
 [![Build Status](https://github.com/DislikePineapple/Julia-HydrodynamicStability.jl/workflows/CI/badge.svg)](https://github.com/DislikePineapple/Julia-HydrodynamicStability.jl/actions?query=workflow%3ACI)
+[![codecov](https://codecov.io/github/DislikePineapple/Julia-HydrodynamicStability.jl/branch/master/graph/badge.svg)](https://app.codecov.io/github/DislikePineapple/Julia-HydrodynamicStability.jl)
 [![Global Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://dislikepineapple.github.io/Julia-HydrodynamicStability.jl/dev/)
 
 ## Introduction
