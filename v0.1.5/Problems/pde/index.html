@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>PDE problems · HydrodynamicStability.jl</title><meta name="title" content="PDE problems · HydrodynamicStability.jl"/><meta property="og:title" content="PDE problems · HydrodynamicStability.jl"/><meta property="twitter:title" content="PDE problems · HydrodynamicStability.jl"/><meta name="description" content="Documentation for HydrodynamicStability.jl."/><meta property="og:description" content="Documentation for HydrodynamicStability.jl."/><meta property="twitter:description" content="Documentation for HydrodynamicStability.jl."/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">HydrodynamicStability.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Problems</span><ul><li><a class="tocitem" href="../nonlinear/">Nonlinear Equations Problem</a></li><li><a class="tocitem" href="../ode/">Ordinary Differential Equations</a></li><li class="is-active"><a class="tocitem" href>PDE problems</a><ul class="internal"><li><a class="tocitem" href="#The-eqution-to-be-solved"><span>The eqution to be solved</span></a></li><li><a class="tocitem" href="#Grid-and-discrete-scheme:-backward-finite-differential-method"><span>Grid and discrete scheme: backward finite differential method</span></a></li><li><a class="tocitem" href="#Crank-Nicolson-method"><span>Crank-Nicolson method</span></a></li><li><a class="tocitem" href="#Example"><span>Example</span></a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Problems</a></li><li class="is-active"><a href>PDE problems</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>PDE problems</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/DislikePineapple/Julia-HydrodynamicStability.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/DislikePineapple/Julia-HydrodynamicStability.jl/blob/master/docs/src/Problems/pde.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="PDE-problems"><a class="docs-heading-anchor" href="#PDE-problems">PDE problems</a><a id="PDE-problems-1"></a><a class="docs-heading-anchor-permalink" href="#PDE-problems" title="Permalink"></a></h1><p>Using backward finite differential method to solve the parabolic partial differential equations.</p><h2 id="The-eqution-to-be-solved"><a class="docs-heading-anchor" href="#The-eqution-to-be-solved">The eqution to be solved</a><a id="The-eqution-to-be-solved-1"></a><a class="docs-heading-anchor-permalink" href="#The-eqution-to-be-solved" title="Permalink"></a></h2><p>The general form of parabilic equations follows:</p><p class="math-container">\[    V_{xx}\frac{\partial^2 u_{i,j}}{\partial x^2} + A\frac{\partial u_{i,j}}{\partial x} +\varGamma\frac{\partial u_{i,j}}{\partial t} + D u_{i,j} = F. \]</p><h2 id="Grid-and-discrete-scheme:-backward-finite-differential-method"><a class="docs-heading-anchor" href="#Grid-and-discrete-scheme:-backward-finite-differential-method">Grid and discrete scheme: backward finite differential method</a><a id="Grid-and-discrete-scheme:-backward-finite-differential-method-1"></a><a class="docs-heading-anchor-permalink" href="#Grid-and-discrete-scheme:-backward-finite-differential-method" title="Permalink"></a></h2><p>Temporal discretization: 2-order backward differential</p><p class="math-container">\[    \left(\frac{\partial u}{\partial t}\right)_{i,j} = \frac{3u_{i,j}-4u_{i-1,j}+u_{i-2,j}}{2\Delta t_{i,j}}, \]</p><p>and reduce to the 1-order form at the entrance as</p><p class="math-container">\[    \left(\frac{\partial u}{\partial t}\right)_{i,j} = \frac{u_{i,j}-u_{i-1,j}}{\Delta t_{i,j}}. \]</p><p>Spatial discretization: 5-point 4-order center differential</p><p class="math-container">\[\left(\frac{\partial u}{\partial x}\right)_{i,j} = \frac{u_{i,j-2}-8u_{i,j-1}+8u_{i,j+1}-u_{i,j+2}}{12\Delta x_j},\\
+\left(\frac{\partial^2 u}{\partial x^2}\right)_{i,j} = \frac{-u_{i,j-2}+16u_{i,j-1}-30u_{i,j}+16u_{i,j+1}-u_{i,j+2}}{12\Delta x_j^2}. \]</p><p>The spatial discretization also need to reduce when close to the boundary.</p><h2 id="Crank-Nicolson-method"><a class="docs-heading-anchor" href="#Crank-Nicolson-method">Crank-Nicolson method</a><a id="Crank-Nicolson-method-1"></a><a class="docs-heading-anchor-permalink" href="#Crank-Nicolson-method" title="Permalink"></a></h2><p>The mixed differential is used for the spatial discretization:</p><p class="math-container">\[\left(\frac{\partial u}{\partial t}\right)_{i,j} = \frac{u_{i,j}-u_{i-1,j}}{\Delta t_{i,j}},\\
+\left(\frac{\partial u}{\partial x}\right)_{i,j} = \frac{u_{i,j+1}-u_{i,j-1}}{2\Delta x_{i,j}}+\frac{u_{i-1,j+1}-u_{i-1,j-1}}{2\Delta x_{i-1,j}}.
+% \left(\frac{\partial^2 u}{\partial x^2}\right)_{i,j} = \frac{u_{i,j+1}-2u_{i,j}+u_{i,j-1}}{2\Delta x_{i,j}^2}+\frac{u_{i-1,j+1}-2u_{i-1,j}+u_{i-1,j-1}}{2\Delta x_{i-1,j}^2}.\]</p><p><strong>Careful when deal with the boundary conditions.</strong></p><h2 id="Example"><a class="docs-heading-anchor" href="#Example">Example</a><a id="Example-1"></a><a class="docs-heading-anchor-permalink" href="#Example" title="Permalink"></a></h2><h3 id="Heat-equation"><a class="docs-heading-anchor" href="#Heat-equation">Heat equation</a><a id="Heat-equation-1"></a><a class="docs-heading-anchor-permalink" href="#Heat-equation" title="Permalink"></a></h3><p>The heat equation for the coefficient of heat conduction <span>$\lambda=1$</span>:</p><p class="math-container">\[\frac{\partial^2 u}{\partial^2 x} - \lambda\frac{\partial u}{\partial t} = 0, \]</p><p>Solve for <span>$\lambda=1$</span> with the initial condition and boundary condition</p><p class="math-container">\[\begin{aligned}
+    u(x,0) &amp; = \sin^2(2\pi x)\quad \forall\quad 0\le x\le 1,\quad t\ge 0,\\ 
+    u(0,t) &amp; = 0 \qquad\qquad\ \ \forall\quad t&gt;0,\\
+    u(1,t) &amp; = 0 \qquad\qquad\ \ \forall\quad t&gt;0.
+\end{aligned}\]</p><p>The governing equations can be written in as the 1-order form</p><p class="math-container">\[    \frac{\partial u_1}{\partial x} - u_2 = 0,\\
+    \frac{\partial u_2}{\partial x}  -\lambda\frac{\partial u_1}{\partial t}  = 0,\]</p><p>and in matrix form</p><p class="math-container">\[    A\frac{\partial u_{i,j}}{\partial x} +\varGamma\frac{\partial u_{i,j}}{\partial t} + D u_{i,j} = 0,\]</p><p>where</p><p class="math-container">\[    A=\begin{pmatrix}
+        1 &amp; 0 \\
+        0 &amp; 1
+    \end{pmatrix},
+    \quad
+    \varGamma=\begin{pmatrix}
+        0 &amp; 0 \\
+        -\lambda &amp; 0
+    \end{pmatrix},
+    \quad
+    D=\begin{pmatrix}
+        0 &amp; -1 \\
+        0 &amp; 0
+    \end{pmatrix}.\]</p><h3 id="Streaky-base-flow"><a class="docs-heading-anchor" href="#Streaky-base-flow">Streaky base flow</a><a id="Streaky-base-flow-1"></a><a class="docs-heading-anchor-permalink" href="#Streaky-base-flow" title="Permalink"></a></h3><p>The linear equation for heating induced streaky baseflow:</p><p class="math-container">\[    2x \tilde{u}\frac{\partial \tilde{u}}{\partial x}-\left(2x\frac{\partial \tilde{f}}{\partial x}+\tilde{f}\right)\frac{\partial \tilde{u}}{\partial \eta}=\frac{\partial}{\partial \eta}\left(\tilde{C}\frac{\partial \tilde{u}}{\partial \eta}\right),\\\mathrm{with}\quad\frac{\partial \tilde{f}}{\partial \eta}=\tilde{u},
+    \\
+    \begin{split}    
+        &amp;2x \tilde{u}\frac{\partial \tilde{T}}{\partial x}-\left(2x\frac{\partial \tilde{f}}{\partial x}+\tilde{f}\right)\frac{\partial \tilde{T}}{\partial \eta}\\
+    =   &amp;\frac{1}{P_r}\frac{\partial}{\partial \eta}\left(\tilde{C}\frac{\partial \tilde{T}}{\partial \eta}\right)  +(\gamma-1)Ma^2\left(\frac{\partial \tilde{u}}{\partial \eta}\right)^2,
+    \end{split}
+    % \\
+    % 2x\frac{\partial F_B}{\partial \eta}\frac{\partial T}{\partial x} - F_B \frac{\partial T}{\partial \eta} = \frac{1}{Pr}\frac{\partial^2 T}{\partial \eta^2},\]</p><p>with the initial and boundary conditions</p><p class="math-container">\[     \tilde{u}=1,\quad \tilde{T}=1\quad\mathrm{as}\quad\eta\to\infty,\\
+    \tilde{f}=\tilde{u}=0,\quad \tilde{T}=T_w(x,\hat{z})\quad\mathrm{on}\quad\eta=0.\]</p><h4 id="Linear-equations-when-Chapman&#39;s-law-adopted"><a class="docs-heading-anchor" href="#Linear-equations-when-Chapman&#39;s-law-adopted">Linear equations when Chapman&#39;s law adopted</a><a id="Linear-equations-when-Chapman&#39;s-law-adopted-1"></a><a class="docs-heading-anchor-permalink" href="#Linear-equations-when-Chapman&#39;s-law-adopted" title="Permalink"></a></h4><p>When Chapman&#39;s law is used, i.e. <span>$C=1$</span>, the governing equation can be written as </p><p class="math-container">\[    f_B&#39;&#39;&#39;+f_Bf_B&#39;&#39;=0,\\
+    2xf_B&#39;\frac{\partial \tilde{T}}{\partial x}-f_B\frac{\partial \tilde{T}}{\partial \eta}
+    =   \frac{1}{P_r}\frac{\partial^2 \tilde{T}}{\partial \eta^2}  +(\gamma-1)Ma^2f_B&#39;&#39;^2.\]</p><p>The D-H inverse transform can be solved together</p><p class="math-container">\[    \tilde{y}=\sqrt{2x}\int_{0}^{\eta}\tilde{T}(x,\eta^{\dag},\hat{z})\mathrm{d}\eta^{\dag} \quad\mathrm{with}\quad \tilde{y}=0\quad \mathrm{on}\quad\eta=0.\]</p><p>Furthemore, the energe equation follows the 1-order form</p><p class="math-container">\[\begin{aligned}
+    \frac{\partial f_1}{\partial \eta} - f_2 &amp; = 0 ,\\
+    \frac{\partial f_2}{\partial \eta} - f_3 &amp; = 0 ,\\
+    \frac{\partial f_3}{\partial \eta}  &amp; = F_3,\\
+    \frac{\partial g_0}{\partial \eta} - \sqrt{2x} g_1 &amp; = 0,\\
+    \frac{\partial g_1}{\partial \eta} - g_2 &amp; = 0,\\
+    \frac{1}{P_r}\frac{\partial g_2}{\partial \eta} - 2x f_2\frac{\partial g_1}{\partial x}
+    % -2x\frac{\partial f_1}{\partial x}g_2
+    +f_1g_2 
+    &amp; = F_6,
+\end{aligned}\]</p><p>with</p><p class="math-container">\[\begin{aligned}
+    F_3 &amp; = -f_1f_3,\\
+    F_6 &amp; = -(\gamma-1)Ma^2f_3^2. 
+\end{aligned}\]</p><p>The initial and boundary conditions follows</p><p class="math-container">\[f_1\to0,\quad f_2\to0,\quad g_1\to T_B\quad\mathrm{as}\quad x\to0,\\
+f_2\to1,\quad g_1\to1\quad\mathrm{as}\quad \eta\to\infty,\\
+g_0=0,\quad g_1=T_w(x,z)\quad\mathrm{on}\quad \eta=0.\]</p><p>Appling the Fourier transform</p><p class="math-container">\[    \{f_1,f_2,f_3,F_3\}=\sum_{n=-\infty}^{\infty} \{\tilde{f}_{1,n},\tilde{f}_{2,n},\tilde{f}_{3,n},\tilde{F}_{3,n}\}\mathrm{e}^{\mathrm{i}n\beta \hat{z}},\\
+    \{g_1,g_2,F_6\}=\sum_{n=-\infty}^{\infty} \{\tilde{g}_{1,n},\tilde{g}_{2,n},\tilde{F}_{2,n}\}\mathrm{e}^{\mathrm{i}n\beta \hat{z}}, \quad n\in \mathbb{Z},\\
+    \mathrm{i.e.} \quad \tilde{F}_{3,n} = \mathscr{F}\left[-f_1f_3\right]_n,\quad\tilde{F}_{6,n} = \mathscr{F}\left[-(\gamma-1)Ma^2f_3^2\right]_n,\]</p><p>where <span>$\mathscr{F}$</span> donate the Fourier operator. Hence, we have</p><p class="math-container">\[\begin{aligned}
+     \frac{\partial \tilde{f}_{1,n}}{\partial \eta} - \tilde{f}_{2,n} &amp; = 0 ,\\
+    \frac{\partial \tilde{f}_{2,n}}{\partial \eta} - \tilde{f}_{3,n} &amp; = 0 ,\\
+    \frac{\partial \tilde{f}_{3,n}}{\partial \eta}  &amp; = \tilde{F}_{3,n},\\
+    \frac{\partial \tilde{g}_{0,n}}{\partial \eta} - \sqrt{2x} \tilde{g}_{1,n} &amp; = 0,\\
+    \frac{\partial \tilde{g}_{1,n}}{\partial \eta} - \tilde{g}_{2,n} &amp; =0 ,\\
+    \frac{1}{P_r}\frac{\partial \tilde{g}_{2,n}}{\partial \eta} - 2x f_2\frac{\partial \tilde{g}_{1,n}}{\partial x}
+    % -2x\frac{\partial f_1}{\partial x}g_2
+    +f_1\tilde{g}_{2,n}
+    &amp; =
+    \tilde{F}_{6,n}
+    . 
+\end{aligned}\]</p><p>For the matrix form</p><p class="math-container">\[    A_n\frac{\partial u_{i,j}}{\partial \eta} +\varGamma_n\frac{\partial u_{i,j}}{\partial x} + D_n u_{i,j} = F_n,\]</p><p>where</p><p class="math-container">\[    A_n=\begin{bmatrix}
+        1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1/Pr 
+    \end{bmatrix},
+    \\
+    \varGamma_n=\begin{bmatrix}
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; -2xf_2 &amp; 0 
+    \end{bmatrix},
+    \\
+    D_n=\begin{bmatrix}
+        0 &amp; -1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; -1 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; -\sqrt{2x} &amp; 0 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; -1 \\
+        0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; f_1 
+    \end{bmatrix},
+    \\
+    \tilde{F}_n=\begin{bmatrix}
+        0\\
+        0\\
+        -\mathscr{F}\left[f_1f_3\right]_n\\
+        0\\
+        0\\
+        -\mathscr{F}\left[(\gamma-1)Ma^2f_3^2\right]_n
+    \end{bmatrix}.\]</p><p>When the lower deck temperature is obtained, we need to carcualte the quantity in phsics spance by using the Dorodnitsyn-Howarth inverse transform</p><p class="math-container">\[    \tilde{y}=\sqrt{2x}\int_{0}^{\eta}\tilde{T}(x,\eta^{\dag},\hat{z})\mathrm{d}\eta^{\dag}.\]</p><p>The blowing velucity is carculated by</p><p class="math-container">\[    \tilde{v}=-\frac{1}{\sqrt{2x}}\left(f_B\tilde{T}-\int_0^\eta \tilde{T}\mathrm{d}\eta^{\dag}f_B&#39;\right).\]</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../ode/">« Ordinary Differential Equations</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.4.1 on <span class="colophon-date" title="Monday 6 May 2024 02:23">Monday 6 May 2024</span>. Using Julia version 1.10.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
