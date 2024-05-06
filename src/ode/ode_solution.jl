@@ -1,5 +1,23 @@
-@doc """
+"""
+    `ODE Solution`
+
 Definde the ordinary differential equations solution
+
+## Solution type
+
+```julia
+    ODESolution{uType, yType, P, A, uType2, RT} <: AbstractODESolution
+```
+
+## Fields
+
+- `u`: The solution of the ODEs.
+- `y`: The wall-normal direction span for the problem.
+- `prob`: The problem that was solved.
+- `alg`: The algorithm that was used to solve the problem.
+- `u_analytic`: The analytic solution of the ODEs.
+- `retcode`: The return code of the solver.
+
 """
 struct ODESolution{uType, yType, P, A, uType2, RT} <: AbstractODESolution
     u::uType
