@@ -17,7 +17,7 @@ function central_difference(f, x; accurency = 2)
         for j in 2:(length(f) - 1)
             df[j] = (f[j + 1] - f[j - 1]) / (x[j + 1] - x[j - 1])
         end
-        df[end] = (f[end - 2] - 4f[end - 1] + f[end]) / (x[end] - x[end - 2])
+        df[end] = (f[end - 2] - 4f[end - 1] + 3f[end]) / (x[end] - x[end - 2])
         return df
     elseif accurency == 4
         df[1] = (C1[1, 3] * f[1] + C1[1, 4] * f[2] + C1[1, 5] * f[3]) / (x[2] - x[1])

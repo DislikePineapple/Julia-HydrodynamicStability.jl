@@ -5,6 +5,10 @@ Solve ordinary differential equations with finit differential method.
 
 ### Initial value problem
 
+```@docs
+ODEProblem{F, uType, yType, P, K}
+```
+
 ### Boundary value problem
 
 The general govening equation can be written as
@@ -70,6 +74,12 @@ Then, to deal with the boundary conditions,
 
 
 The shooting method can be used to solve the nonlinear boundary value problem as well.
+
+## Solution 
+
+```@docs
+ODESolution{uType, yType, P, A, uType2, RT}
+```
 
 ## Algorithm
 

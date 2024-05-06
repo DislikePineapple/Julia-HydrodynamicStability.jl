@@ -10,10 +10,25 @@ Define a linear stavility problem that is solved for a compressible flate bounda
 
 """
 
-@doc """
-`Ordinary Differential Equations Problem`
+"""
+    `Ordinary Differential Equations Problem`
 
 Define the ODEs problem
+
+## Problem type
+
+```julia
+    ODEProblem{F, uType, yType, P, K} <: AbstractODEProblem
+```
+
+## Fields
+
+- `f`: Function for the ordianry differential equations ``du = f(u,t,p)``.
+- `u0`: Initial conditions for the ODEs.
+- `yspan`: Wall-normal direction span for the problem.
+- `p`: The parameters for the problem. Defaults to `NullParameters`
+- `kwargs`: The keyword arguments.
+
 """
 struct ODEProblem{F, uType, yType, P, K} <: AbstractODEProblem
     f::F

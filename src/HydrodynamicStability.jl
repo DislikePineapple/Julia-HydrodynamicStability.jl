@@ -65,6 +65,7 @@ export fft_expand, ifft_expand
 export nest_vector, flatten_vector
 
 export ODEProblem, BVProblem, NonlinearProblem
+export ODESolution
 export HeatProblem, NSHeatProblem
 export solve
 
