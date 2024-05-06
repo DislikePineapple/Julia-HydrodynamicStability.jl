@@ -8,11 +8,14 @@ Solve the PDE problem using the backward finite difference method with fixed ste
 """
 
 # using FiniteDiff to solve the parabolic PDE problem
-abstract type PPDEAlgorithm <: AbstractAlgorithm end
-abstract type NPPDEAlgorithm <: PPDEAlgorithm end
-struct NSFDM <: NPPDEAlgorithm end # nonlinear spectral finite difference method
+abstract type PDEAlgorithm <: AbstractPDEAlgorithm end
+abstract type NPDEAlgorithm <: PDEAlgorithm end
 
-function solve(prob::HeatProblem, alg::FDM, args...; kwarg...)
+struct PFDM <: PDEAlgorithm end
+struct PSFDM <: PDEAlgorithm end
+struct NPSFDM <: PDEAlgorithm end
+
+function solve(prob::HeatProblem, alg::PDEAlgorithm, args...; kwarg...)
     @unpack grid, ic = prob
     _, nt, nx = size(grid)
     Type = eltype(ic)
@@ -25,10 +28,11 @@ function solve(prob::HeatProblem, alg::FDM, args...; kwarg...)
             flow[:, j, :] = ic
             continue
         else
-            M, B = jac(prob, flow, j)
+            M, B = jac(prob, alg, flow, j)
             B = M \ B
             for k in 1:nx
-                flow[:, j, k] = B[((k - 1) * nv + 1):(k * nv)]
+                rk = (1:nv) .+ ((k - 1) * nv)
+                flow[:, j, k] = B[rk]
             end
         end
     end
@@ -38,7 +42,7 @@ end
 
 function solve(
         prob::NSHeatProblem,
-        alg::NSFDM,
+        alg::NPSFDM,
         args...;
         abstol = nothing,
         reltol = nothing,
@@ -72,7 +76,7 @@ function solve(
 
     ##* NSPPDE iteration ---------------------------------------------
     showiters && println("NSPPDE iteration:")
-    showprogress ? p = Progress(nt, "Solve the Nonlinear PDE using spectral method") :
+    showprogress ? p = Progress(nt, "Solve the nonlinear PDE using spectral method") :
     nothing
     tspan = grid[1, :, 1, 1]
     for i in 1:nt
@@ -110,7 +114,7 @@ function solve(
     HeatSolution(grid, flow, prob, alg, nothing, nothing)
 end
 
-function jac(prob, flow, tn)
+function jac(prob, alg::PDEAlgorithm, flow, tn)
     @unpack fun, fun_para, imhomo, im_para, bc, bc_para, grid, ic = prob
     nx = size(grid)[3]
     T = eltype(ic)
@@ -121,10 +125,17 @@ function jac(prob, flow, tn)
 
     Vxx, A, Γ = [zeros(T, nv, nv) for _ in 1:3]
 
-    x = grid[2, tn, :]
     ΔT = grid[1, tn, 1] - grid[1, tn - 1, 1]
 
-    Diff, Diff2 = FDM_D(x)
+    if alg isa PSFDM
+        Diff, x = chebyshevshift(nx, (grid[2, tn, 1], grid[2, tn, end]))
+        Diff2 = Diff .^ 2
+    elseif alg isa PFDM
+        x = grid[2, tn, :]
+        Diff, Diff2 = FDM_D(x)
+    else
+        error("Choose alg as 'PSFDM' or 'PFDM'. ")
+    end
 
     for i in eachindex(x)
         ri = (1:nv) .+ ((i - 1) * nv)
@@ -174,10 +185,10 @@ function jac(prob, flow, imhomo, bc_para, tN, yN)
 
     Vxx, A, Γ, D = [zeros(T, nv, nv) for _ in 1:4]
 
-    x = grid[2, tN, :, yN]
     ΔT = grid[1, tN, 1, yN] - grid[1, tN - 1, 1, yN]
 
-    Diff, Diff2 = FDM_D(x)
+    Diff, x = chebyshevshift(nx, (grid[2, tN, 1, yN], grid[2, tN, end, yN]))
+    grid[2, tN, :, yN] .= x
 
     for i in eachindex(x)
         ri = (1:nv) .+ ((i - 1) * nv)
@@ -197,7 +208,7 @@ function jac(prob, flow, imhomo, bc_para, tN, yN)
         B[ri] += Γtn0
         for j in eachindex(x)
             rj = (1:nv) .+ ((j - 1) * nv)
-            M[ri, rj] += Diff2[i, j] * Vxx + Diff[i, j] * A
+            M[ri, rj] += Diff[i, j]^2 * Vxx + Diff[i, j] * A
         end
     end
 

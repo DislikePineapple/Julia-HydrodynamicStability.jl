@@ -21,7 +21,6 @@ abstract type AbstractProblem end
 
 abstract type AbstractPDEProblem <: AbstractProblem end
 abstract type AbstractODEProblem <: AbstractProblem end
-abstract type AbstractBVProblem <: AbstractProblem end
 abstract type AbstractEVProblem <: AbstractProblem end
 abstract type AbstractSCProblem <: AbstractProblem end
 
@@ -29,6 +28,8 @@ abstract type InstabilityProblem <: AbstractEVProblem end
 
 ## Algorithm
 abstract type AbstractAlgorithm end
+abstract type AbstractODEAlgorithm <: AbstractAlgorithm end
+abstract type AbstractPDEAlgorithm <: AbstractAlgorithm end
 abstract type AbstractEVPAlgorithm <: AbstractAlgorithm end
 
 ## Solution
@@ -59,14 +60,16 @@ include("pde/pde_problem.jl")
 include("pde/pde_solution.jl")
 include("pde/pde_solve.jl")
 
-export central_difference, simpsons_integral, chebyshev
+export central_difference, simpsons_integral, chebyshev, chebyshevshift
 export fft_expand, ifft_expand
+export nest_vector, flatten_vector
 
 export ODEProblem, BVProblem, NonlinearProblem
 export HeatProblem, NSHeatProblem
 export solve
 
-export Secant, Muller, Bisection, Falsi
-export RK4, Shooting, FDM, CFDM, NSFDM
+export Newton, Secant, Muller, Bisection, Falsi
+export RK4, Shooting, FDM, SFDM, NSFDM
+export PFDM, PSFDM, NPSFDM
 
 end

@@ -8,7 +8,7 @@ The general form of parabilic equations follows:
     V_{xx}\frac{\partial^2 u_{i,j}}{\partial x^2} + A\frac{\partial u_{i,j}}{\partial x} +\varGamma\frac{\partial u_{i,j}}{\partial t} + D u_{i,j} = F. 
 ```
 
-## Algorithm, grid and discrete scheme: backward finite differential method
+## Grid and discrete scheme: backward finite differential method
 Temporal discretization: 2-order backward differential
 ```math
     \left(\frac{\partial u}{\partial t}\right)_{i,j} = \frac{3u_{i,j}-4u_{i-1,j}+u_{i-2,j}}{2\Delta t_{i,j}}, 

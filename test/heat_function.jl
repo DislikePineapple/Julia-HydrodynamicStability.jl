@@ -4,7 +4,7 @@ using HydrodynamicStability, Test
     solve the Heat equation for the test of PDEProblem
 """
 nt = 101
-nx = 101
+nx = 64
 ny = 101
 lt = 1
 lx = 1
@@ -52,10 +52,14 @@ bcp = zeros(2, nt)
 paras = (fp, nothing, ic, bcp)
 
 prob = HeatProblem(mesh, funs, paras)
-sol = solve(prob, FDM())
+sol = solve(prob, PFDM())
+sols = solve(prob, PSFDM())
 
 @test sol.flow[1, 1, :, :] == sin.(2π * mesh[2, 1, :, :]) .^ 2
 @test isapprox(maximum(sol.flow[1, end, :]), 0.0, atol = 1e-4)
+
+@test sols.flow[1, 1, :, :] == sin.(2π * mesh[2, 1, :, :]) .^ 2
+@test isapprox(maximum(sols.flow[1, end, :]), 0.0, atol = 1e-4)
 
 # TODO find the reason why the result is oscillating, Runga's phenomenon ?
 
@@ -77,7 +81,7 @@ bcp = zeros(2, nt, ny)
 paras = (fp, nothing, ic, bcp)
 
 prob = NSHeatProblem(mesh, Ny, funs, paras)
-NSsol = solve(prob, NSFDM())
+solns = solve(prob, NPSFDM())
 
-@test isapprox(NSsol.flow[1, 1, :, 1], sin.(2π .* xspan) .^ 2, atol = 1e-9)
-@test isapprox(maximum(sol.flow[:, :, :] - NSsol.flow[:, :, :, 1]), 0.0, atol = 1e-9)
+@test isapprox(solns.flow[1, 1, :, 1], sin.(2π .* xspan) .^ 2, atol = 1e-9)
+@test isapprox(maximum(sols.flow[:, :, :] - solns.flow[:, :, :, 1]), 0.0, atol = 1e-9)
