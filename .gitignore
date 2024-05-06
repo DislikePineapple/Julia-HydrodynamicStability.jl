@@ -8,3 +8,4 @@ Manifest.toml
 *.ipynb
 
 data/
+draft.jl

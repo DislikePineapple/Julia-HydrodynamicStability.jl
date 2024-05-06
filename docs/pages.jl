@@ -3,6 +3,7 @@
 pages = [
     "Home" => "index.md",
     "Problems" => Any[
+        "Problems/nonlinear.md",
         "Problems/ode.md",
         "Problems/pde.md"]
 ]

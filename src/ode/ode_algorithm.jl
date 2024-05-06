@@ -1,14 +1,16 @@
-abstract type ODEsAlgorithm <: AbstractAlgorithm end
-struct RK4 <: ODEsAlgorithm end
+abstract type ODEAlgorithm <: AbstractODEAlgorithm end
+struct RK4 <: ODEAlgorithm end
 
-abstract type BVProblemAlgorithm <: AbstractAlgorithm end
-struct Shooting{I, IT} <: BVProblemAlgorithm
+abstract type BVPAlgorithm <: AbstractODEAlgorithm end
+struct Shooting{I, IT} <: BVPAlgorithm
     ivp::I
     iter::IT
 end
 
 Shooting() = Shooting(RK4(), Secant())
 
-struct FDM <: BVProblemAlgorithm end
-struct CFDM <: BVProblemAlgorithm end
-struct FEM <: BVProblemAlgorithm end
+struct FDM <: BVPAlgorithm end
+struct SFDM <: BVPAlgorithm end
+struct NSFDM <: BVPAlgorithm end
+
+struct FEM <: BVPAlgorithm end

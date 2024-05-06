@@ -33,21 +33,28 @@ struct ODEProblem{F, uType, yType, P, K} <: AbstractODEProblem
     end
 end
 
-@doc """
-`Boundary Value Problem`
+"""
+    `Boundary Value Problem`
 
 Define a boundary Value problem
 
-### Fields
+## Problem type
 
-- `f`: Function for the ordianry differential equations Du=f(u,t,p).
+```julia
+    BVProblem{F, BC, U0, Y, P, K} <: AbstractBVProblem
+```
+
+## Fields
+
+- `f`: Function for the ordianry differential equations ``du = f(u,t,p)``.
 - `bc`: Boundary conditions for the ODEs. Given as a function.
 - `yspan`: Wall-normal direction span for the problem.
 - `u0`: Initial conditions for the ODEs.
 - `p`: The parameters for the problem. Defaults to `NullParameters`
 - `kwargs`: The keyword arguments.
+
 """
-struct BVProblem{F, BC, U0, Y, P, K} <: AbstractBVProblem
+struct BVProblem{F, BC, U0, Y, P, K} <: AbstractODEProblem
     f::F
     bc::BC
     u0::U0
@@ -66,33 +73,3 @@ struct BVProblem{F, BC, U0, Y, P, K} <: AbstractBVProblem
         )
     end
 end
-
-# struct TwopointBVProblem{F,IC,BC,U0,Y,P,K} <: AbstractBVProblem
-#     f::F
-#     ic::IC
-#     bc::BC
-#     u0::U0
-#     yspan::Y
-#     p::P
-#     kwargs::K
-
-#     function TwopointBVProblem(f, ic, bc, u0, yspan, p = NullParameter(); kwargs...)
-#         new{
-#             typeof(f),
-#             typeof(ic),
-#             typeof(bc),
-#             typeof(u0),
-#             typeof(yspan),
-#             typeof(p),
-#             typeof(kwargs),
-#         }(
-#             f,
-#             ic,
-#             bc,
-#             u0,
-#             yspan,
-#             p,
-#             kwargs,
-#         )
-#     end
-# end

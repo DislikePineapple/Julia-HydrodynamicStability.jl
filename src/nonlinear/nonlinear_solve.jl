@@ -1,10 +1,50 @@
 abstract type NonlinearAlgorithm <: AbstractAlgorithm end
+
 struct Bisection <: NonlinearAlgorithm end
 struct Falsi <: NonlinearAlgorithm end
 struct Muller <: NonlinearAlgorithm end
 struct Secant <: NonlinearAlgorithm end
+struct Newton <: NonlinearAlgorithm end
 
 solve(prob::NonlinearProblem; kwarg...) = solve(prob::NonlinearProblem, Secant(); kwarg...)
+
+function solve(prob::NonlinearProblem, alg::Newton, arg...; abstol = nothing,
+        reltol = nothing, maxiters = 100, sor = 1, showiters = false, kwarg...)
+    t = float(prob.t0)
+    F, DF = prob.f
+    f(t) = F(t, prob.p)
+    df(u, t) = DF(u, t, prob.p)
+    T = typeof(t)
+
+    atol = abstol !== nothing ? abstol : eps(real(one(eltype(T))))^(4 // 5)
+    rtol = reltol !== nothing ? reltol : eps(real(one(eltype(T))))^(4 // 5)
+
+    if t isa Number
+        to = oftype(one(eltype(t)), Inf)
+    else
+        to = map(t -> oftype(one(eltype(t)), Inf), t)
+    end
+
+    showiters && println("Newton-Raphson iteration:")
+
+    for n in 1:maxiters
+        u = f(t)
+        du = df(u, t)
+
+        iszero(u) && return NonlinearSolution(t, prob, alg)
+
+        Δt = sor * du \ u
+        t -= Δt
+
+        showiters &&
+            @printf "iter = %i, FW = %.3e, BW = %.3e\n" n maximum(abs, Δt) maximum(
+                abs, u)
+
+        isapprox(t, to, atol = atol, rtol = rtol) && return NonlinearSolution(t, prob, alg)
+        to = t
+    end
+    error("Failed to converge in $maxiters iterations, and t = $t")
+end
 
 function solve(
         prob::NonlinearProblem,
