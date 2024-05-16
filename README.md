@@ -3,18 +3,18 @@
 [![codecov](https://codecov.io/github/DislikePineapple/Julia-HydrodynamicStability.jl/branch/master/graph/badge.svg)](https://app.codecov.io/github/DislikePineapple/Julia-HydrodynamicStability.jl)
 [![Global Docs](https://img.shields.io/badge/docs-latest-blue.svg)](https://dislikepineapple.github.io/Julia-HydrodynamicStability.jl/dev/)
 
-## Introduction
+## Overview
 
-This is a package for solving eigenvalue problems of hydrodynamics stability systems. 
-This package aims to establish a lib that includes linear stability theory (LST), partial stability equations (PSE) and direct numerical system (DNS).
+This package provides a comprehensive solution for eigenvalue problems associated with hydrodynamic stability systems.
+It aims to establish a library encompassing Linear Stability Theory (LST), Parabolised Stability Equations (PSE), and Direct Numerical Systems (DNS).
 
-## Abstract type
+## Structure
 
-The present package uses the structure of [SciMLBase.jl](https://github.com/SciML/SciMLBase.jl) for the abstract type:
+This package is designed based on the structure and fundamental concepts of [SciMLBase.jl](https://github.com/SciML/SciMLBase.jl), particularly in terms of the abstract types:
 
 - Problem
 - Algorithms
 - Solution
 - Function
 
-Also, the code style follows SciML.
+Furthermore, the coding style adheres to the conventions established by SciML.
