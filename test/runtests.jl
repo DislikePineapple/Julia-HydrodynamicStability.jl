@@ -12,5 +12,6 @@ const is_APPVEYOR = Sys.iswindows() && haskey(ENV, "APPVEYOR")
         @time @safetestset "BVP Blasius" include("blasius.jl")
         @time @safetestset "BVP FDM" include("airy.jl")
         @time @safetestset "Heat Function" include("heat_function.jl")
+        @time @safetestset "Parameter Variation" include("parameter_variation.jl")
     end
 end
