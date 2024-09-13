@@ -7,6 +7,7 @@ It also need a systems for parameter research.
 module HydrodynamicStability
 
 using ForwardDiff, LinearAlgebra, FFTW
+using SpecialFunctions
 using ProgressMeter
 
 import Printf: @printf
@@ -63,6 +64,7 @@ include("pde/pde_solve.jl")
 export central_difference, simpsons_integral, chebyshev, chebyshevshift
 export fft_expand, ifft_expand
 export nest_vector, flatten_vector
+export parameter_variation
 
 export ODEProblem, BVProblem, NonlinearProblem
 export ODESolution
