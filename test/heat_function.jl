@@ -18,6 +18,7 @@ tspan = range(0, lt, nt)
 mesh = zeros(2, nt, nx)
 
 for i in 1:nt, j in 1:nx
+
     mesh[1, i, j] = (i - 1) * lt / (nt - 1)
     mesh[2, i, j] = (j - 1) * lx / (nx - 1)
 end

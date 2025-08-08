@@ -72,9 +72,11 @@ function solve(
 
     ##* FFT for the forcing, bc and ic ------------------------------
     for i in 1:nt, n in 1:size(bc_para)[1]
+
         bcparaS[n, i, 1:Ny] = fft_expand(complex(bc_para[n, i, :]), Ny; atol = 1e-9)
     end
     for j in 1:nx, n in 1:nv
+
         icS[n, j, 1:Ny] = fft_expand(complex(ic[n, j, :]), Ny; atol = 1e-9)
     end
 
@@ -86,6 +88,7 @@ function solve(
         if i == 1
             flowS[:, i, :, :] = icS[:, :, 1:Ny]
             for n in 1:nv, j in 1:nx
+
                 flow[n, i, j, :] = ifft_expand(flowS[n, i, j, :], ny)
             end
             showprogress && next!(p)
@@ -104,6 +107,7 @@ function solve(
                 end
                 # IFFT for the solution
                 for n in 1:nv, j in 1:nx
+
                     flow[n, i, j, :] = ifft_expand(flowS[n, i, j, :], ny)
                 end
                 if iterate
