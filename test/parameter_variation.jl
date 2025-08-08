@@ -67,6 +67,7 @@ end
 
 yspan = range(1, 20 + 1, 101) * exp(π / 6 * 1im)
 y0 = exp(π / 6 * 1im)
+y0N = findfirst(x -> x == y0, yspan)
 
 sol_L, sol_LT, Int_RT = functionR(1, yspan)
 sol_L_Pr, sol_LT_Pr, Int_RT_Pr = functionR(0.72, yspan)
@@ -74,21 +75,21 @@ sol_L_Pr, sol_LT_Pr, Int_RT_Pr = functionR(0.72, yspan)
 L = sol_L[1, :]
 Lprime = sol_L[2, :]
 
-sol_LT_A = -Lprime[findfirst(x -> x == y0, yspan)] / airyai(y0) .* airyai.(yspan) + Lprime
+sol_LT_A = -Lprime[y0N] / airyai(y0) .* airyai.(yspan) + Lprime
 
-κ = simpsons_integral(airyai.(yspan[findfirst(x -> x == y0, yspan):end]),
-    yspan[findfirst(x -> x == y0, yspan):end]; accurency = 3)
-Phi00 = Lprime[findfirst(x -> x == y0, yspan)] / 3 / airyai(y0) *
-        (airyaiprime(y0)) - 3 / 4 + Lprime[findfirst(x -> x == y0, yspan)] / 12 * y0^2
+κ = simpsons_integral(airyai.(yspan[y0N:end]),
+    yspan[y0N:end]; accurency = 3)
+Phi00 = Lprime[y0N] / 3 / airyai(y0) *
+        (airyaiprime(y0)) - 3 / 4 + Lprime[y0N] / 12 * y0^2
 Int_RT_A = Phi00 / airyaiprime(y0) .* κ +
-           Lprime[findfirst(x -> x == y0, yspan)] / 3 / airyai(y0) .* κ -
-           Lprime[findfirst(x -> x == y0, yspan)] / 3 / airyai(y0) .*
-           yspan[findfirst(x -> x == y0, yspan):end] .*
-           airyai.(yspan[findfirst(x -> x == y0, yspan):end]) +
-           L[findfirst(x -> x == y0, yspan):end] ./ 4 +
-           yspan[findfirst(x -> x == y0, yspan):end] .*
-           Lprime[findfirst(x -> x == y0, yspan):end] ./ 4 .+
-           y0 * Lprime[findfirst(x -> x == y0, yspan)] / 12
+           Lprime[y0N] / 3 / airyai(y0) .* κ -
+           Lprime[y0N] / 3 / airyai(y0) .*
+           yspan[y0N:end] .*
+           airyai.(yspan[y0N:end]) +
+           L[y0N:end] ./ 4 +
+           yspan[y0N:end] .*
+           Lprime[y0N:end] ./ 4 .+
+           y0 * Lprime[y0N] / 12
 
 @test isapprox(sol_LT_A[1:51], sol_LT[1:51], atol = 1e-2)
 @test isapprox(sum(abs2, Int_RT_A[1:51] - Int_RT[1:51]), 0.0, atol = 1e-2)

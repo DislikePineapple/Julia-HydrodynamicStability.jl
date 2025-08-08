@@ -1,5 +1,5 @@
 # Ordinary Differential Equations
-Solve ordinary differential equations with finit differential method.
+Solve ordinary differential equations with finite differential method.
 
 ## Problems
 
@@ -11,7 +11,7 @@ ODEProblem{F, uType, yType, P, K}
 
 ### Boundary value problem
 
-The general govening equation can be written as
+The general governing equation can be written as
 
 ```math
     u' = f(u,t), 
@@ -23,7 +23,7 @@ with the boundary conditions
     u(0) = a,\quad u(1) = b.
 ```
 
-Following the mathematical defination, the numerical specification is given as
+Following the mathematical definition, the numerical specification is given as
 
 ```@docs
 BVProblem{F, BC, U0, Y, P, K}
@@ -87,7 +87,7 @@ ODESolution{uType, yType, P, A, uType2, RT}
 
 ### Shooting Method
 
-### Finite Diffenrence Method
+### Finite Differential Method
 
 #### Chebyshev collection
 

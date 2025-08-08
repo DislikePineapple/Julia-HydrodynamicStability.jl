@@ -16,7 +16,7 @@ which can be written as a first order system:
 ```
 
 """
-function blasius!(du, u, p, t)
+function blasius!(du, u, t, p)
     du[1] = u[2]
     du[2] = u[3]
     du[3] = -1 / 2 * u[1] * u[3]
@@ -33,7 +33,7 @@ The boundary conditions for blasius equations, which means:
 
 addtion
 """
-function blasius_bc!(residual, u, p, t)
+function blasius_bc!(residual, u, t, p)
     residual[1] = u[begin][1]
     residual[2] = u[begin][2]
     residual[3] = u[end][2] - 1
@@ -49,12 +49,12 @@ The coefficient for Sutherland's viscosity law:
 ```
 
 """
-# C(T, Te) = T^(1 / 2) * (1 + Se / Te) / (T + Se / Te)
-# Cprime_over_C(T, Tprime, Te) = Tprime * (Se / Te - T) / (T + Se / Te) / T / 2
+C(T, Te) = T^(1 / 2) * (1 + Se / Te) / (T + Se / Te)
+Cprime_over_C(T, Tprime, Te) = Tprime * (Se / Te - T) / (T + Se / Te) / T / 2
 
 # Chapman's law
-C(T, Te) = 1
-Cprime_over_C(T, Tprime, Te) = 0
+# C(T, Te) = 1
+# Cprime_over_C(T, Tprime, Te) = 0
 
 """
     similarity!(du, u, p, t)
@@ -67,7 +67,7 @@ The compressible blasius equations:
 ```
 
 """
-function similarity!(du, u, fs, t) # u[1] = f, u[2] = f', u[3] = g, u[4] = f'', u[6] = g'; f' = U, g = T , 
+function similarity!(du, u, t, fs) # u[1] = f, u[2] = f', u[3] = g, u[4] = f'', u[6] = g'; f' = U, g = T , 
     @unpack Ma, Te = fs
 
     du[1] = u[2]
@@ -90,7 +90,7 @@ The boundary conditions for compressible blasius equations, which means:
 ```
     
 """
-function similarity_bc!(residual, u, fs, t)
+function similarity_bc!(residual, u, t, fs)
     Tw = 1 + sqrt(Pr) * (γ - 1) * fs.Ma^2 / 2
 
     residual[1] = u[begin][1]       # F(0) = 0
@@ -104,11 +104,16 @@ end
 function compressibleBlasius(fs::FreeStream; δ = nothing)
     u₀ = [0, 0, 0.3779, 0, 1 + sqrt(Pr) * (γ - 1) * fs.Ma^2 / 2, 0]
     # initial guess for the shooting method
-    ηspan = (0.0, 100.0)
+    ηrange = (0.0, 15.0)
+    D, ηspan = chebyshevshift(512, ηrange)
 
     # solve the compressible blasius equations in the coodinate η = 1 / sqrt(x * Re) ∫_0^y ρ(η) dη
     bvp = BVProblem(similarity!, similarity_bc!, u₀, ηspan, fs)
     sol = solve(bvp, Shooting(), dy = 0.05)
+
+    # u₀ = [0, 0, 0.3]
+    # bvp = BVProblem(blasius!, blasius_bc!, u₀, ηspan, fs)
+    # sol = solve(bvp, Shooting())
 
     ## postporcessing
     # define the domain and give the streamwise grid
@@ -132,8 +137,8 @@ function compressibleBlasius(fs::FreeStream; δ = nothing)
     # carculate the entrance momentum thickness
     ρu = flow[1, 1, :] .* flow[2, 1, :]
     δ₉₉ = sol.y[findfirst(u -> u >= 0.99, flow[2, 1, :])]
-    δd = integrate(sol.y, 1 .- ρu)
-    δm = integrate(sol.y, ρu .* (1 .- ρu))
+    δd = simpsons_integral(1 .- ρu, sol.y)
+    δm = simpsons_integral(ρu .* (1 .- ρu), sol.y)
 
     if isnothing(δ) || isinf(fs.Re)
         # carculate normalized grid
@@ -145,7 +150,7 @@ function compressibleBlasius(fs::FreeStream; δ = nothing)
             flow[3, i, :] = -1 / sqrt(2 * x[i]) * (f .* flow[4, i, :] - y .* flow[2, i, :])
         end
     else
-        ratio = δd / δ
+        ratio = δd[end] / δ
         L = ratio^2
         @show ratio, L
         @show δ₉₉, δd, δm
