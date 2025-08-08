@@ -46,12 +46,12 @@ function solve(
         args...;
         abstol = nothing,
         reltol = nothing,
-        showiters = false,
+        iterate = false,
         showprogress = false,
         maxiters = 100,
         kwarg...
 )
-    @unpack grid, imhomo, ic, bc_para, Ny = prob
+    @unpack grid, imhomo, fun_para, ic, bc_para, Ny = prob
     _, nt, nx, ny = size(grid)
     Type = eltype(ic)
     nv = size(ic)[1] # nv is the number of solution vectors
@@ -62,6 +62,10 @@ function solve(
 
     flowS = complex(zeros(Type, nv, nt, nx, Ny))
     flowS0 = complex(zeros(Type, nv, nx, Ny))
+
+    flow = zeros(Type, nv, nt, nx, ny)
+
+    nonlinear_term = complex(zeros(Type, nv, nx, Ny))
 
     bcparaS = complex(similar(bc_para))
     icS = complex(similar(ic))
@@ -75,42 +79,46 @@ function solve(
     end
 
     ##* NSPPDE iteration ---------------------------------------------
-    showiters && println("NSPPDE iteration:")
+    iterate && (println("NSPPDE iteration:"); showprogress = false)
     showprogress ? p = Progress(nt, "Solve the nonlinear PDE using spectral method") :
     nothing
-    tspan = grid[1, :, 1, 1]
     for i in 1:nt
         if i == 1
             flowS[:, i, :, :] = icS[:, :, 1:Ny]
+            for n in 1:nv, j in 1:nx
+                flow[n, i, j, :] = ifft_expand(flowS[n, i, j, :], ny)
+            end
+            showprogress && next!(p)
             continue
         else
-            flowS0[:, :, :] = flowS[:, i - 1, :, :]
+            flowS0 = flowS[:, i - 1, :, :]
+            flow[:, i, :, :] = flow[:, i - 1, :, :]
             for n in 1:maxiters
-                imhomoS = imparaS(imhomo, flowS0, ny)
+                imhomo(nonlinear_term, [flow, fun_para, Ny, i])
                 for k in 1:Ny
-                    M, B = jac(prob, flowS, imhomoS, bcparaS, i, k)
+                    M, B = jac(prob, flowS, nonlinear_term, bcparaS, i, k)
                     B = M \ B
                     for j in 1:nx
                         flowS[:, i, j, k] = B[((j - 1) * nv + 1):(j * nv)]
                     end
                 end
-                showiters &&
-                    @printf "time = %e, iteration = %i, BW = %.3e\n" tspan[i] n maximum(
+                # IFFT for the solution
+                for n in 1:nv, j in 1:nx
+                    flow[n, i, j, :] = ifft_expand(flowS[n, i, j, :], ny)
+                end
+                if iterate
+                    @printf "time = %e, iteration = %i, BW = %.3e\n" grid[1, i, 1, 1] n maximum(
                         abs.(flowS[:, i, :, :] - flowS0),
                     )
-                showprogress && next!(p)
+                else
+                    break
+                end
                 isapprox(flowS0, flowS[:, i, :, :], atol = atol, rtol = rtol) && break
                 flowS0 = flowS[:, i, :, :]
             end
+            showprogress && next!(p)
         end
     end
-
-    ##* IFFT for the solution ---------------------------------------
-    flow = zeros(Type, nv, nt, nx, ny)
-    for n in 1:nv, i in 1:nt, j in 1:nx
-        flow[n, i, j, :] = ifft_expand(flowS[n, i, j, :], ny)
-    end
-
     HeatSolution(grid, flow, prob, alg, nothing, nothing)
 end
 
@@ -215,26 +223,4 @@ function jac(prob, flow, imhomo, bc_para, tN, yN)
     bc(M, B, bc_para[:, tN, yN])
 
     return M, B
-end
-
-function imparaS(imhomo!, flowS, ny)
-    nv, nx, Ny = size(flowS)
-    flow = zeros(nv, nx, ny)
-    #Fourier inverse transform
-    for n in 1:nv, j in 1:nx
-        flow[n, j, :] = ifft_expand(flowS[n, j, :], ny)
-        # selfdefined function `ifft_expand` in "utils.jl"
-    end
-
-    imhomo = zeros(nv)
-    imhomoS = zeros(ComplexF64, nv, nx, ny)
-    for j in 1:nx, k in 1:ny
-        imhomo!(imhomo, flow[:, j, k])
-        imhomoS[:, j, k] = imhomo
-    end
-
-    for n in 1:nv, j in 1:nx
-        imhomoS[n, j, 1:Ny] = fft_expand(imhomoS[n, j, :], Ny; atol = 1e-3)
-    end
-    return imhomoS[:, :, 1:Ny]
 end

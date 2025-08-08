@@ -135,17 +135,23 @@ end
 function fft_expand(f::AbstractArray{ComplexF64}, Nz::Int; atol = 1e-3, massage = nothing)
     # must pass values instead of reference
     nz = Int((length(f) - 1))
-    F = zeros(ComplexF64, Nz)
-    maximum(abs.(f)) == 0 && return F
-    f[1:nz] = fft(f[1:nz])
-    # Delate high frequency component
-    max = maximum(abs.(f[Int(Nz / 2 + 1):(nz - Int(Nz / 2))]) / maximum(abs.(f)))
-    if isapprox(max, 0, atol = atol)
-        F[1:Int(Nz / 2)] = f[1:Int(Nz / 2)] ./ nz .* Nz
-        F[(end - Int(Nz / 2 - 1)):end] = f[(nz - Int(Nz / 2 - 1)):nz] ./ nz .* Nz
+    if nz == Nz
+        F = fft(f[1:nz])
+    elseif nz > Nz
+        F = zeros(ComplexF64, Nz)
+        maximum(abs.(f)) == 0 && return F
+        f[1:nz] = fft(f[1:nz])
+        # Delate high frequency component
+        max = maximum(abs.(f[Int(Nz / 2 + 1):(nz - Int(Nz / 2))]) / maximum(abs.(f)))
+        if isapprox(max, 0, atol = atol)
+            F[1:Int(Nz / 2)] = f[1:Int(Nz / 2)] ./ nz .* Nz
+            F[(end - Int(Nz / 2 - 1)):end] = f[(nz - Int(Nz / 2 - 1)):nz] ./ nz .* Nz
+        else
+            !isnothing(massage) && println(massage)
+            error("High frequency component not tend to zero! The maximum f is $(maximum(abs.(f))), the maximum rtol is $max.")
+        end
     else
-        !isnothing(massage) && println(massage)
-        error("High frequency component not tend to zero! The maximum f id $(maximum(abs.(f))), the maximum rtol is $max.")
+        error("The length of f is $nz, but Nz is $Nz. The length of f must be greater than or equal to Nz.")
     end
     return F
 end

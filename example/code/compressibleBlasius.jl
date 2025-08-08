@@ -1,5 +1,5 @@
 using HydrodynamicStability, NumericalIntegration, Plots, Revise
-plotlyjs()
+# plotlyjs()
 import UnPack: @unpack
 
 include("type.jl")
@@ -13,15 +13,15 @@ Re = 10456.106799816920  # The entrance Reynolds number
 x₀ = 0.2 # The dimensional position for entrance Re number
 δ₀ = Re / Re₁ # The dimensional displacement thickness at the entrance
 δ = δ₀ / sqrt(x₀ / (Re₁ * x₀)) # The dimensional displacement thickness at dimensionless length L
-fs = FreeStream(Ma, Te, Re₁)
-
+fs = FreeStream(Ma, Te, Inf)
+# y, ρ, d = compressibleBlasius(fs; δ = δ)
 grid, flow = compressibleBlasius(fs; δ = δ);
 
 ## 插值 生成新的网格和流动 --------------------------
 using Interpolations
 
 x = grid[1, :, 1]
-ny_new = 401
+ny_new = 512
 grid_new = zeros(2, length(x), ny_new)
 flow_new = zeros(4, length(x), ny_new)
 
@@ -67,8 +67,12 @@ for i in eachindex(grid[1, :, 1])
 end
 
 # plot for check v ---------------------------------
-plot(grid_new[1, :, 1], v[:, end])
+plot(grid_new[1, :, 1], v[:, end], w = 4)
 plot!(grid_new[1, :, 1], flow[3, :, end])
+
+##
+plot(v[100, :], grid_new[2, 100, :], w = 4)
+plot!(flow_new[3, 100, :], grid_new[2, 100, :], ylims = (0, 20))
 
 ##* write as Plot3D files --------------------------
 using FortranFiles
