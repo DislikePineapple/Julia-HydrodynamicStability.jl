@@ -6,7 +6,6 @@
 ## Overview
 
 This package provides a comprehensive solution for eigenvalue problems associated with hydrodynamic stability systems.
-It aims to establish a library encompassing Linear Stability Theory (LST), Parabolised Stability Equations (PSE), and Direct Numerical Systems (DNS).
 
 ## Structure
 
