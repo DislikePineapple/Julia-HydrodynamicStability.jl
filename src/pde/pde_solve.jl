@@ -48,7 +48,7 @@ function solve(
         reltol = nothing,
         iterate = false,
         showprogress = false,
-        maxiters = 100,
+        maxiters = 1000,
         kwarg...
 )
     @unpack grid, imhomo, fun_para, ic, bc_para, Ny = prob

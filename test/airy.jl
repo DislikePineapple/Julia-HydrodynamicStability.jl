@@ -49,7 +49,7 @@ solc = flatten_vector(retc.u)
 
 ##* Nonlinear Equation ----------------------------------------------
 
-function FunProblrm1!(A, D, F, t, p)
+function FunProblem1!(A, D, F, t, p)
     A[1, 1] = 1
     A[2, 2] = 1
 
@@ -65,7 +65,7 @@ function DNProblem1!(DN, u, t, p)
     DN[2, 1] = -2 * u[1]
 end
 
-funs = (FunProblrm1!, NProblem1!, DNProblem1!)
+funs = (FunProblem1!, NProblem1!, DNProblem1!)
 
 function BCProblem1!(M, u)
     M[2, :] .= 0
@@ -102,68 +102,3 @@ fun1 = D * sol[1, :] - sol[2, :]
 fun2 = D * sol[2, :] - (sol[1, :] - sol[1, :] .^ 2)
 @test isapprox(sqrt(sum(abs2, fun1)), 0, atol = 1e-9)
 @test isapprox(sqrt(sum(abs2, fun2)), 0, atol = 1e-9)
-
-##* Blasius Equation ------------------------------------------------
-
-# function Blasius!(A, D, F, t, p)
-#     A[1, 1] = 1
-#     A[2, 2] = 1
-#     A[3, 3] = 1
-
-#     D[1, 2] = -1
-#     D[2, 3] = -1
-# end
-
-# function NBlasius!(N, u, t, p)
-#     N[3] = -1 / 2 * u[1] * u[3]
-# end
-
-# function DNBlasius!(DN, u, t, p)
-#     DN[3, 1] = -1 / 2 * u[3]
-#     DN[3, 3] = -1 / 2 * u[1]
-# end
-
-# funs = (Blasius!, NBlasius!, DNBlasius!)
-
-# function BlasiusBC!(M, u)
-#     M[1, :] .= 0
-#     M[1, 1] = 1
-#     M[3, :] .= 0
-#     M[3, 2] = 1
-#     M[end, :] .= 0
-#     M[end, end - 1] = 1
-
-#     u[1] = 0
-#     u[3] = 0
-#     u[end] = 1
-# end
-
-# function NBlasiusBC!(N)
-#     N[1] = 0
-#     N[3] = 0
-#     N[end] = 0
-# end
-
-# function DNBlasiusBC!(DN)
-#     DN[1, :] .= 0
-#     DN[3, :] .= 0
-#     DN[end, :] .= 0
-# end
-
-# bcs = (BlasiusBC!, NBlasiusBC!, DNBlasiusBC!)
-
-# yspan = (0, 15)
-# ny = 64
-# # u₀ = 1 / 3 * ones(3 * ny)
-# u₀ = u0
-
-# prob = BVProblem(funs, bcs, u₀, yspan)
-# ret = solve(prob, NSFDM(); ny = ny, showiters = true)
-# sol = flatten_vector(ret.u)
-
-# fun1 = D * sol[1, :] - sol[2, :]
-# fun2 = D * sol[2, :] - sol[3, :]
-# fun3 = D * sol[3, :] + 1 / 2 * sol[1, :] .* sol[3, :]
-# @test isapprox(sqrt(sum(abs2, fun1)), 0, atol = 1e-9)
-# @test isapprox(sqrt(sum(abs2, fun2)), 0, atol = 1e-9)
-# @test isapprox(sqrt(sum(abs2, fun3)), 0, atol = 1e-9)

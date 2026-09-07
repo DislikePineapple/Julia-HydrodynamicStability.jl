@@ -190,17 +190,15 @@ function flatten_vector(sol::AbstractArray)
     return mat
 end
 
-function parameter_variation(fun, yspan)
-    Ai = airyai.(yspan)
-    Bi = airybi.(yspan)
+function parameter_variation(fun, y)
+    Ai = airyai.(y)
+    Bi = airybi.(y)
 
-    sol = zeros(eltype(fun), length(yspan))
+    sol = zeros(eltype(fun), length(y))
 
-    Part1 = simpsons_integral(Ai[1:end] .* fun[1:end], yspan[1:end]; accurency = 3)[end]
-
-    for j in eachindex(yspan)
-        Part1 = simpsons_integral(Ai[j:end] .* fun[j:end], yspan[j:end]; accurency = 3)[end]
-        Part2 = simpsons_integral(Bi[1:j] .* fun[1:j], yspan[1:j]; accurency = 3)[end]
+    for j in eachindex(y)
+        Part1 = simpsons_integral(Ai[j:end] .* fun[j:end], y[j:end]; accurency = 3)[end]
+        Part2 = simpsons_integral(Bi[1:j] .* fun[1:j], y[1:j]; accurency = 3)[end]
         sol[j] = -π * (Bi[j] * Part1 + Ai[j] * Part2)
     end
     return sol
